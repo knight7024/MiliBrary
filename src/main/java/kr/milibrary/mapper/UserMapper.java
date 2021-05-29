@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Repository("userMapper")
 public interface UserMapper {
-    @Select("SELECT * FROM milibrary.users WHERE narasarang_id = #{narasarangId} AND is_deleted = 0;")
+    @Select("SELECT * FROM milibrary.users WHERE narasarang_id = #{narasarangId};")
     User getUserByNarasarangId(@Param("narasarangId") String narasarangId);
 
     @Insert("INSERT INTO milibrary.users (narasarang_id, password, nickname) " +
@@ -22,9 +22,9 @@ public interface UserMapper {
             "WHERE u.narasarang_id = t.narasarang_id;")
     User getUserByToken(@Param("token") String token);
 
-    @Update("UPDATE milibrary.users SET password = #{password}, is_registered = #{registered}, is_deleted = #{deleted};")
+    @Update("UPDATE milibrary.users SET password = #{password}, is_registered = #{registered} WHERE narasarang_id = #{narasarangId};")
     void updateUser(User user);
 
-    @Update("UPDATE milibrary.users SET is_registered = #{registered}, registered_at = #{registeredAt} WHERE narasarang_id = #{narasarangId} AND is_deleted = 0;")
+    @Update("UPDATE milibrary.users SET is_registered = #{registered}, registered_at = #{registeredAt} WHERE narasarang_id = #{narasarangId};")
     void updateUserRegistration(@Param("narasarangId") String narasarangId, @Param("registered") boolean registered, @Param("registeredAt") Timestamp registeredAt);
 }

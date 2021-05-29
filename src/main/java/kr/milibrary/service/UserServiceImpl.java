@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean auth(String token) {
-        boolean isExpired = false;
+        boolean isExpired;
         try {
             Token dbToken = getToken(token);
 
@@ -127,7 +127,12 @@ public class UserServiceImpl implements UserService {
             // 현재 시간과 토큰 발송 시간 비교해서 만료되었는지 여부 확인
             isExpired = dbToken.isExpired(1);
             // 유저 가입 처리 승인
-            if (!isExpired) userMapper.updateUserRegistration(dbUser.getNarasarangId(), true, new Timestamp(System.currentTimeMillis()));
+            if (!isExpired) {
+                userMapper.updateUserRegistration(dbUser.getNarasarangId(), true, new Timestamp(System.currentTimeMillis()));
+
+                dbToken.setUsed(true);
+                tokenMapper.updateToken(dbToken);
+            }
         }
         catch (Exception e) {
             return false;
@@ -163,7 +168,7 @@ public class UserServiceImpl implements UserService {
             put("contextURL", contextURL);
             put("success", false);
         }};
-        Token dbToken = null;
+        Token dbToken;
         try {
             dbToken = getToken(token);
 
@@ -198,6 +203,9 @@ public class UserServiceImpl implements UserService {
             
             dbUser.setPassword(BCrypt.hashpw((String) variables.get("password"), BCrypt.gensalt()));
             userMapper.updateUser(dbUser);
+
+            dbToken.setUsed(true);
+            tokenMapper.updateToken(dbToken);
         }
         catch (Exception e) {
             return false;
