@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko-kr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css');
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'NanumSquare', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .bg-image {
+            background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&dl=janko-ferlic-sfL_QOnmy00-unsplash.jpg');
+            filter: blur(4px);
+            -webkit-filter: blur(4px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .bg-text {
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.7);
+            box-shadow: 1px 1px 10px gray;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 600px;
+            padding: 80px 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="bg-image"></div>
+
+<div class="bg-text">
+    <h1>MiliBrary 회원가입</h1>
+    <hr>
+    <br>
+    <p style="font-size:16px">MiliBrary 회원가입이 완료되었습니다.</p>
+    <p style="font-size:16px">로그인해서 다양한 서비스를 이용해보세요!</p>
+    <br>
+    <hr>
+    <br>
+    <b style="font-size:12px">Copyright MiliBrary All rights reserved.</b>
+</div>
+</body>
+</html>
