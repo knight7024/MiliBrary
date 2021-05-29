@@ -45,8 +45,9 @@ public class Token {
             this.templateName = templateName;
         }
     }
-    
-    Token() {}
+
+    public Token() {
+    }
 
     public Token(String narasarangId, String token, TokenType tokenTypeEnum) {
         this.narasarangId = narasarangId;

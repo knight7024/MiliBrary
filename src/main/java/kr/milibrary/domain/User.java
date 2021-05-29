@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     protected String narasarangId;
@@ -13,6 +12,9 @@ public class User {
     protected Boolean isRegistered;
     protected LocalDateTime registeredAt;
     protected LocalDateTime createdAt;
+
+    public User() {
+    }
 
     public String getNarasarangId() {
         return narasarangId;
@@ -64,8 +66,8 @@ public class User {
 
     public void update(User user) {
         if (user.getPassword() != null)
-            this.password = user.getPassword();
+            password = user.getPassword();
         if (user.getRegistered() != null)
-            this.isRegistered = user.getRegistered();
+            isRegistered = user.getRegistered();
     }
 }
