@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final TokenMapper tokenMapper;
     private final EmailUtil emailUtil;
-    @Value("${env.goorm.contextURL}")
+    @Value("${env.prod.contextURL}")
     private String contextURL;
 
     @Autowired
