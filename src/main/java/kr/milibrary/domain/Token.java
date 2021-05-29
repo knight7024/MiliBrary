@@ -10,7 +10,9 @@ public class Token {
     protected String narasarangId;
     protected String token;
     protected String tokenType;
+    protected Boolean isUsed = false;
     protected LocalDateTime createdAt;
+
     protected TokenType tokenTypeEnum;
 
     public enum TokenType {
@@ -86,6 +88,14 @@ public class Token {
         this.tokenTypeEnum = TokenType.valueOf(tokenType.toUpperCase());
     }
 
+    public Boolean getUsed() {
+        return isUsed;
+    }
+
+    public void setUsed(Boolean used) {
+        isUsed = used;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -103,8 +113,13 @@ public class Token {
         this.tokenType = tokenTypeEnum.getTokenType();
     }
 
+    public void update(Token token) {
+        if (token.getUsed() != null)
+            this.isUsed = token.getUsed();
+    }
+
     public boolean isExpired(long hourToAdd) {
         // 발송 시간에 (hourToAdd) 시간 더한 시간이 지금 시간보다 전이면 만료
-        return this.createdAt.plusHours(hourToAdd).isBefore(LocalDateTime.now());
+        return createdAt.plusHours(hourToAdd).isBefore(LocalDateTime.now()) | isUsed;
     }
 }

@@ -11,7 +11,6 @@ public class User {
     protected String password;
     protected String nickname;
     protected Boolean isRegistered;
-    protected Boolean isDeleted;
     protected LocalDateTime registeredAt;
     protected LocalDateTime createdAt;
 
@@ -47,14 +46,6 @@ public class User {
         isRegistered = registered;
     }
 
-    public Boolean getDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
-
     public LocalDateTime getRegisteredAt() {
         return registeredAt;
     }
@@ -76,7 +67,5 @@ public class User {
             this.password = user.getPassword();
         if (user.getRegistered() != null)
             this.isRegistered = user.getRegistered();
-        if (user.getDeleted() != null)
-            this.isDeleted = user.getDeleted();
     }
 }

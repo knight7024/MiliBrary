@@ -4,6 +4,7 @@ import kr.milibrary.domain.Token;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -16,4 +17,7 @@ public interface TokenMapper {
 
     @Select("SELECT * FROM milibrary.tokens WHERE token = #{token}")
     Token getToken(@Param("token") String token);
+
+    @Update("UPDATE milibrary.tokens SET is_used = #{used} WHERE id = #{id} AND is_used = 0;")
+    void updateToken(Token token);
 }
