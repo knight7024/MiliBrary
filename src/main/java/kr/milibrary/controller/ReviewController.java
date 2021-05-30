@@ -2,13 +2,12 @@ package kr.milibrary.controller;
 
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Review;
+import kr.milibrary.domain.ReviewList;
 import kr.milibrary.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/api")
 @RestController
@@ -27,18 +26,13 @@ public class ReviewController {
     }
 
     @GetMapping("/book/{bookId}/reviews")
-    public ResponseEntity<List<Review>> getReviews(@PathVariable int bookId) {
+    public ResponseEntity<ReviewList> getReviews(@PathVariable int bookId) {
         return new ResponseEntity<>(reviewService.getReviews(bookId), HttpStatus.OK);
     }
 
-    @GetMapping("/book/{bookId}/review/{reviewId}")
-    public ResponseEntity<Review> getReview(@PathVariable int bookId, @PathVariable int reviewId) {
-        return new ResponseEntity<>(reviewService.getReview(bookId, reviewId), HttpStatus.OK);
-    }
-
-    @PutMapping("/book/{bookId}/review/{reviewId}")
-    public ResponseEntity<String> updateReview(@PathVariable int bookId, @PathVariable int reviewId) {
-        BaseResponse response = reviewService.updateReview(bookId, reviewId);
+    @PatchMapping("/book/{bookId}/review/{reviewId}")
+    public ResponseEntity<String> updateReview(@PathVariable int bookId, @PathVariable int reviewId, @RequestBody Review review) {
+        BaseResponse response = reviewService.updateReview(bookId, reviewId, review);
         return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
     }
 

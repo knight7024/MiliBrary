@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public interface UserService {
-    BaseResponse signUp(User user) throws SQLException;
-    BaseResponse signUpResend(User user) throws SQLException;
+    BaseResponse signUp(User user);
+    BaseResponse signUpResend(User user);
     BaseResponse signIn(User user);
     boolean auth(String token);
-    BaseResponse forgotPassword(User user) throws SQLException;
+    BaseResponse forgotPassword(User user);
     Map<String, Object> resetPasswordAuth(String token);
     boolean resetPassword(Map<String, Object> variables);
 }

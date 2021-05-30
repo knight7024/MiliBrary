@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 public interface TokenMapper {
     @Insert("INSERT INTO milibrary.tokens (narasarang_id, token, token_type) " +
             "VALUES (#{narasarangId}, #{token}, #{tokenType})")
-    void createToken(Token token) throws SQLException;
+    void createToken(Token token) throws DataAccessException;
 
     @Select("SELECT * FROM milibrary.tokens WHERE token = #{token}")
     Token getToken(@Param("token") String token);

@@ -1,5 +1,6 @@
 package kr.milibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class Token {
     protected String token;
     protected String tokenType;
     protected Boolean isUsed = false;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime createdAt;
 
     protected TokenType tokenTypeEnum;
