@@ -31,17 +31,17 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse createReview(int bookId, Review review) {
         try {
             reviewMapper.createReview(bookId, review);
-        }
-        catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             throw new ConflictException("리뷰는 중복해서 작성할 수 없습니다.");
         }
-
         return new BaseResponse("리뷰를 성공적으로 작성했습니다.", HttpStatus.CREATED);
     }
 
     @Override
     public ReviewList getReviews(int bookId) {
-        return new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId));
+        Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId)));
+        reviewListOptional.map(ReviewList::getAverageScore).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
+        return reviewListOptional.get();
     }
 
     @Override
@@ -49,16 +49,13 @@ public class ReviewServiceImpl implements ReviewService {
         Review dbReview = getReviewById(bookId, reviewId);
         dbReview.update(review);
         reviewMapper.updateReview(bookId, reviewId, dbReview);
-
         return new BaseResponse("리뷰를 성공적으로 수정했습니다.", HttpStatus.CREATED);
     }
 
     @Override
     public BaseResponse deleteReview(int bookId, int reviewId) {
-        Review dbReview = getReviewById(bookId, reviewId);
-        dbReview.setDeleted(true);
-        updateReview(bookId, reviewId, dbReview);
-
+        if (reviewMapper.deleteReview(bookId, reviewId) == 0)
+            throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
         return new BaseResponse("리뷰를 성공적으로 삭제했습니다.", HttpStatus.NO_CONTENT);
     }
 }

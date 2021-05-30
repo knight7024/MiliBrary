@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private User getUserByNarasarangId(String username) throws BadRequestException, NotFoundException {
         if (username == null)
             throw new BadRequestException("잘못된 요청입니다. 계속 이 메세지가 반복된다면 관리자에게 문의하세요.");
+
         Optional<User> userOptional = Optional.ofNullable(userMapper.getUserByNarasarangId(username));
         return userOptional.orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
     }
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
     private Token getToken(String token) throws BadRequestException {
         if (token == null)
             throw new BadRequestException("잘못된 요청입니다. 계속 이 메세지가 반복된다면 관리자에게 문의하세요.");
+
         Optional<Token> tokenOptional = Optional.ofNullable(tokenMapper.getToken(token));
         return tokenOptional.orElseThrow(() -> new BadRequestException("잘못된 요청입니다. 계속 이 메세지가 반복된다면 관리자에게 문의하세요."));
     }
@@ -85,11 +87,9 @@ public class UserServiceImpl implements UserService {
                 put("contextURL", contextURL);
             }});
             emailUtil.sendEmail(mail, registerToken.getTokenTypeEnum().getTemplateName());
-        }
-        catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             throw new ConflictException("이미 가입되어 있는 나라사랑 아이디입니다.");
         }
-
         return new BaseResponse("회원가입을 요청했습니다. 나라사랑포털 이메일로 이동해서 본인인증을 완료해주세요.", HttpStatus.CREATED);
     }
 
@@ -105,12 +105,11 @@ public class UserServiceImpl implements UserService {
         tokenMapper.createToken(registerToken);
 
         // 본인인증 메일 발송
-        Mail mail = new Mail("MiliBrary 회원가입 확인", user.getNarasarangId() + "@narasarang.or.kr", "milibrary@gmail.com", new HashMap<String, Object>(){{
+        Mail mail = new Mail("MiliBrary 회원가입 확인", user.getNarasarangId() + "@narasarang.or.kr", "milibrary@gmail.com", new HashMap<String, Object>() {{
             put("token", registerToken.getToken());
             put("contextURL", contextURL);
         }});
         emailUtil.sendEmail(mail, registerToken.getTokenTypeEnum().getTemplateName());
-
         return new BaseResponse("인증메일을 재전송했습니다. 나라사랑포털 이메일로 이동해서 본인인증을 완료해주세요.", HttpStatus.CREATED);
     }
 
@@ -136,11 +135,9 @@ public class UserServiceImpl implements UserService {
                 dbToken.setUsed(true);
                 tokenMapper.updateToken(dbToken);
             }
-        }
-        catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             return false;
         }
-
         return !isExpired;
     }
 
@@ -156,18 +153,17 @@ public class UserServiceImpl implements UserService {
 
         tokenMapper.createToken(resetToken);
 
-        Mail mail = new Mail("MiliBrary 비밀번호 재설정", user.getNarasarangId() + "@narasarang.or.kr", "milibrary@gmail.com", new HashMap<String, Object>(){{
+        Mail mail = new Mail("MiliBrary 비밀번호 재설정", user.getNarasarangId() + "@narasarang.or.kr", "milibrary@gmail.com", new HashMap<String, Object>() {{
             put("token", resetToken.getToken());
             put("contextURL", contextURL);
         }});
         emailUtil.sendEmail(mail, resetToken.getTokenTypeEnum().getTemplateName());
-
         return new BaseResponse("비밀번호 재설정을 요청했습니다. 나라사랑포털 이메일로 이동해서 비밀번호 재설정을 진행해주세요.", HttpStatus.CREATED);
     }
 
     @Override
     public Map<String, Object> resetPasswordAuth(String token) {
-        Map<String, Object> variables = new HashMap<String, Object>(){{
+        Map<String, Object> variables = new HashMap<String, Object>() {{
             put("contextURL", contextURL);
             put("success", false);
         }};
@@ -178,16 +174,14 @@ public class UserServiceImpl implements UserService {
             User dbUser = userMapper.getUserByToken(token);
             if (dbUser == null)
                 return variables;
-            
+
             variables.put("token", dbToken.getToken());
-        }
-        catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             return variables;
         }
 
         variables.put("isExpired", dbToken.isExpired(1));
         variables.replace("success", true);
-
         return variables;
     }
 
@@ -203,17 +197,15 @@ public class UserServiceImpl implements UserService {
             User dbUser = userMapper.getUserByToken(dbToken.getToken());
             if (dbUser == null)
                 return false;
-            
+
             dbUser.setPassword(BCrypt.hashpw((String) variables.get("password"), BCrypt.gensalt()));
             userMapper.updateUser(dbUser);
 
             dbToken.setUsed(true);
             tokenMapper.updateToken(dbToken);
-        }
-        catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             return false;
         }
-
         return true;
     }
 }

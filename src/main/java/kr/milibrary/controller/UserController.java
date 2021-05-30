@@ -52,10 +52,9 @@ public class UserController {
         Map<String, Object> result = userService.resetPasswordAuth(token);
         if (!((boolean) result.get("success")) || (boolean) result.get("isExpired"))
             return "error-page";
-        
+
         model.addAttribute("contextURL", result.get("contextURL"));
         model.addAttribute("token", result.get("token"));
-        
         return "reset-password";
     }
 

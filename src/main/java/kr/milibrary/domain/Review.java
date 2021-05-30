@@ -12,7 +12,6 @@ public class Review {
     protected String narasarangId;
     protected Float score;
     protected String comment;
-    protected Boolean isDeleted;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
@@ -61,14 +60,6 @@ public class Review {
         this.comment = comment;
     }
 
-    public Boolean getDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -90,7 +81,5 @@ public class Review {
             score = review.getScore();
         if (review.getComment() != null)
             comment = review.getComment();
-        if (review.getDeleted() != null)
-            isDeleted = review.getDeleted();
     }
 }
