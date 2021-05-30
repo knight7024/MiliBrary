@@ -11,6 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service("reviewService")
@@ -57,5 +58,11 @@ public class ReviewServiceImpl implements ReviewService {
         if (reviewMapper.deleteReview(bookId, reviewId) == 0)
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
         return new BaseResponse("리뷰를 성공적으로 삭제했습니다.", HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public List<Review> getRandomReviews(Integer size) {
+        size = Optional.ofNullable(size).orElse(5);
+        return reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size);
     }
 }

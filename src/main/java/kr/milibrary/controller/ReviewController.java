@@ -1,5 +1,6 @@
 package kr.milibrary.controller;
 
+import io.swagger.annotations.ApiParam;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Review;
 import kr.milibrary.domain.ReviewList;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/api")
 @RestController
@@ -40,5 +43,10 @@ public class ReviewController {
     public ResponseEntity<String> deleteReview(@PathVariable int bookId, @PathVariable int reviewId) {
         BaseResponse response = reviewService.deleteReview(bookId, reviewId);
         return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+    }
+
+    @GetMapping("/review/random")
+    public ResponseEntity<List<Review>> getRandomReviews(@ApiParam(value = "1~100", required = true) @RequestParam Integer size) {
+        return new ResponseEntity<>(reviewService.getRandomReviews(size), HttpStatus.OK);
     }
 }

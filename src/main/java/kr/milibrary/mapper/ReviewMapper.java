@@ -27,4 +27,14 @@ public interface ReviewMapper {
 
     @Delete("DELETE FROM milibrary.reviews WHERE id = #{reviewId} AND book_id = #{bookId}")
     int deleteReview(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
+
+    // Covering Index
+    @Select("SELECT * FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT id FROM milibrary.reviews ORDER BY RAND() LIMIT #{size}" +
+            ") AS t2 " +
+            "ON t1.id = t2.id " +
+            "ORDER BY t1.created_at DESC;"
+    )
+    List<Review> getRandomReviews(@Param("size") Integer size);
 }
