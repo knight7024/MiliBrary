@@ -2,6 +2,8 @@ package kr.milibrary.mapper;
 
 import kr.milibrary.domain.User;
 import org.apache.ibatis.annotations.*;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -15,7 +17,7 @@ public interface UserMapper {
 
     @Insert("INSERT INTO milibrary.users (narasarang_id, password, nickname) " +
             "VALUES (#{narasarangId}, #{password}, #{nickname});")
-    void createUser(User user) throws SQLException;
+    void createUser(User user) throws DataAccessException;
 
     @Select("SELECT * FROM milibrary.users u, " +
             "(SELECT * FROM milibrary.tokens WHERE token = #{token}) t " +

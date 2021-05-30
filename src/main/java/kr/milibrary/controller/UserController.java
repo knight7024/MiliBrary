@@ -23,14 +23,14 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody User user) throws Exception {
+    public ResponseEntity<String> signUp(@RequestBody User user) {
         BaseResponse response = userService.signUp(user);
         return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
     }
 
     @ResponseBody
     @PostMapping("/signup/resend")
-    public ResponseEntity<String> signUpResend(@RequestBody User user) throws Exception {
+    public ResponseEntity<String> signUpResend(@RequestBody User user) {
         BaseResponse response = userService.signUpResend(user);
         return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
     }
@@ -42,7 +42,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody User user) throws Exception {
+    public ResponseEntity<String> forgotPassword(@RequestBody User user) {
         BaseResponse response = userService.forgotPassword(user);
         return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
     }
@@ -52,10 +52,9 @@ public class UserController {
         Map<String, Object> result = userService.resetPasswordAuth(token);
         if (!((boolean) result.get("success")) || (boolean) result.get("isExpired"))
             return "error-page";
-        
+
         model.addAttribute("contextURL", result.get("contextURL"));
         model.addAttribute("token", result.get("token"));
-        
         return "reset-password";
     }
 

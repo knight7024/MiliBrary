@@ -9,13 +9,13 @@
                            http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context-4.3.xsd">
-    
+
     <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
-        <property name="templateEngine" ref="templateEngine" />
-        <property name="characterEncoding" value="UTF-8" />
-        <property name="order" value="1" />
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="order" value="1"/>
     </bean>
-    
+
     <context:component-scan base-package="kr.milibrary.controller"/>
     <context:component-scan base-package="kr.milibrary.config"/>
 

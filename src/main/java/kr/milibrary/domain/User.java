@@ -2,8 +2,8 @@ package kr.milibrary.domain;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
@@ -11,8 +11,13 @@ public class User {
     protected String password;
     protected String nickname;
     protected Boolean isRegistered;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime registeredAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime createdAt;
+
+    public User() {
+    }
 
     public String getNarasarangId() {
         return narasarangId;
@@ -64,8 +69,8 @@ public class User {
 
     public void update(User user) {
         if (user.getPassword() != null)
-            this.password = user.getPassword();
+            password = user.getPassword();
         if (user.getRegistered() != null)
-            this.isRegistered = user.getRegistered();
+            isRegistered = user.getRegistered();
     }
 }
