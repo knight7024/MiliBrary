@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Review {
+public class Review extends BaseDomain {
     protected Integer id;
     protected Integer bookId;
     protected String narasarangId;

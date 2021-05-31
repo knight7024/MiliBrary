@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
+public class User extends BaseDomain {
     protected String narasarangId;
     protected String password;
     protected String nickname;

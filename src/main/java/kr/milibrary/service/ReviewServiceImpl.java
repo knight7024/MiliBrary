@@ -35,14 +35,14 @@ public class ReviewServiceImpl implements ReviewService {
         } catch (DuplicateKeyException e) {
             throw new ConflictException("리뷰는 중복해서 작성할 수 없습니다.");
         }
-        return new BaseResponse("리뷰를 성공적으로 작성했습니다.", HttpStatus.CREATED);
+        return new BaseResponse("리뷰 작성에 성공했습니다.", getReviewById(bookId, review.getId()), HttpStatus.CREATED);
     }
 
     @Override
-    public ReviewList getReviews(int bookId) {
+    public BaseResponse getReviews(int bookId) {
         Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId)));
         reviewListOptional.map(ReviewList::getAverageScore).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
-        return reviewListOptional.get();
+        return new BaseResponse(null, reviewListOptional.get(), HttpStatus.OK);
     }
 
     @Override
@@ -50,19 +50,19 @@ public class ReviewServiceImpl implements ReviewService {
         Review dbReview = getReviewById(bookId, reviewId);
         dbReview.update(review);
         reviewMapper.updateReview(bookId, reviewId, dbReview);
-        return new BaseResponse("리뷰를 성공적으로 수정했습니다.", HttpStatus.CREATED);
+        return new BaseResponse("리뷰 수정에 성공했습니다.", dbReview, HttpStatus.CREATED);
     }
 
     @Override
     public BaseResponse deleteReview(int bookId, int reviewId) {
         if (reviewMapper.deleteReview(bookId, reviewId) == 0)
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
-        return new BaseResponse("리뷰를 성공적으로 삭제했습니다.", HttpStatus.NO_CONTENT);
+        return new BaseResponse("리뷰 삭제에 성공했습니다.", HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public List<Review> getRandomReviews(Integer size) {
+    public BaseResponse getRandomReviews(Integer size) {
         size = Optional.ofNullable(size).orElse(5);
-        return reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size);
+        return new BaseResponse(null, new ReviewList(reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
 }

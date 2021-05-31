@@ -29,8 +29,9 @@ public class ReviewController {
     }
 
     @GetMapping("/book/{bookId}/reviews")
-    public ResponseEntity<ReviewList> getReviews(@PathVariable int bookId) {
-        return new ResponseEntity<>(reviewService.getReviews(bookId), HttpStatus.OK);
+    public ResponseEntity<BaseResponse> getReviews(@PathVariable int bookId) {
+        BaseResponse response = reviewService.getReviews(bookId);
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @PatchMapping("/book/{bookId}/review/{reviewId}")
@@ -46,7 +47,8 @@ public class ReviewController {
     }
 
     @GetMapping("/review/random")
-    public ResponseEntity<List<Review>> getRandomReviews(@ApiParam(value = "1~100", required = true) @RequestParam Integer size) {
-        return new ResponseEntity<>(reviewService.getRandomReviews(size), HttpStatus.OK);
+    public ResponseEntity<BaseResponse> getRandomReviews(@ApiParam(value = "1~100", required = true) @RequestParam Integer size) {
+        BaseResponse response = reviewService.getRandomReviews(size);
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 }

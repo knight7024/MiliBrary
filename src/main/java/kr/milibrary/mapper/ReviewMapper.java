@@ -11,6 +11,7 @@ import java.util.List;
 public interface ReviewMapper {
     @Insert("INSERT INTO milibrary.reviews (book_id, narasarang_id, score, comment) " +
             "VALUES (#{bookId}, #{review.narasarangId}, #{review.score}, #{review.comment});")
+    @Options(useGeneratedKeys = true, keyProperty = "review.id")
     void createReview(@Param("bookId") int bookId, @Param("review") Review review) throws DataAccessException;
 
     @Select("SELECT * FROM milibrary.reviews WHERE book_id = #{bookId} ORDER BY created_at DESC;")

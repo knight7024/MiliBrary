@@ -8,8 +8,15 @@ import org.springframework.http.HttpStatus;
 @JsonTypeName(value = "response")
 public class BaseResponse {
     protected String responseMessage;
+    protected BaseDomain responseResult;
     @JsonIgnore
     protected HttpStatus responseStatus;
+
+    public BaseResponse(String responseMessage, BaseDomain responseResult, HttpStatus responseStatus) {
+        this.responseMessage = responseMessage;
+        this.responseResult = responseResult;
+        this.responseStatus = responseStatus;
+    }
 
     public BaseResponse(String responseMessage, HttpStatus responseStatus) {
         this.responseMessage = responseMessage;
@@ -23,6 +30,15 @@ public class BaseResponse {
 
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
+    }
+
+    @JsonGetter("result")
+    public BaseDomain getResponseResult() {
+        return responseResult;
+    }
+
+    public void setResponseResult(BaseDomain responseResult) {
+        this.responseResult = responseResult;
     }
 
     public HttpStatus getResponseStatus() {
