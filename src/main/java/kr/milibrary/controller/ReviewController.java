@@ -23,9 +23,9 @@ public class ReviewController {
     }
 
     @PostMapping("/book/{bookId}/review")
-    public ResponseEntity<String> createReview(@PathVariable int bookId, @RequestBody Review review) {
+    public ResponseEntity<BaseResponse> createReview(@PathVariable int bookId, @RequestBody Review review) {
         BaseResponse response = reviewService.createReview(bookId, review);
-        return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @GetMapping("/book/{bookId}/reviews")
@@ -34,15 +34,15 @@ public class ReviewController {
     }
 
     @PatchMapping("/book/{bookId}/review/{reviewId}")
-    public ResponseEntity<String> updateReview(@PathVariable int bookId, @PathVariable int reviewId, @RequestBody Review review) {
+    public ResponseEntity<BaseResponse> updateReview(@PathVariable int bookId, @PathVariable int reviewId, @RequestBody Review review) {
         BaseResponse response = reviewService.updateReview(bookId, reviewId, review);
-        return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @DeleteMapping("/book/{bookId}/review/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable int bookId, @PathVariable int reviewId) {
+    public ResponseEntity<BaseResponse> deleteReview(@PathVariable int bookId, @PathVariable int reviewId) {
         BaseResponse response = reviewService.deleteReview(bookId, reviewId);
-        return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @GetMapping("/review/random")

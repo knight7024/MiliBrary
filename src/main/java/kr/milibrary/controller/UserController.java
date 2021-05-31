@@ -23,16 +23,16 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody User user) {
+    public ResponseEntity<BaseResponse> signUp(@RequestBody User user) {
         BaseResponse response = userService.signUp(user);
-        return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @ResponseBody
     @PostMapping("/signup/resend")
-    public ResponseEntity<String> signUpResend(@RequestBody User user) {
+    public ResponseEntity<BaseResponse> signUpResend(@RequestBody User user) {
         BaseResponse response = userService.signUpResend(user);
-        return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @GetMapping("/auth")
@@ -42,9 +42,9 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody User user) {
+    public ResponseEntity<BaseResponse> forgotPassword(@RequestBody User user) {
         BaseResponse response = userService.forgotPassword(user);
-        return new ResponseEntity<>(response.getResponseMessage(), response.getResponseStatus());
+        return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
     @GetMapping("/reset-password")
