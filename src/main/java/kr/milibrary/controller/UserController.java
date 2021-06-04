@@ -1,5 +1,6 @@
 package kr.milibrary.controller;
 
+import io.swagger.annotations.*;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.User;
 import kr.milibrary.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Map;
 
@@ -21,6 +23,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "회원가입")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "회원가입에 성공했을 때"),
+            @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
+    })
     @ResponseBody
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse> signUp(@RequestBody User user) {
@@ -28,18 +35,27 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
+    @ApiOperation(value = "회원가입 인증메일 재전송")
+    @ApiResponses(value = {
+            @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
+    })
     @ResponseBody
-    @PostMapping("/signup/resend")
-    public ResponseEntity<BaseResponse> signUpResend(@RequestBody User user) {
+    @PostMapping("/signup/resend-email")
+    public ResponseEntity<BaseResponse> signUpResend(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @RequestBody User user) {
         BaseResponse response = userService.signUpResend(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
+    @ApiIgnore
     @GetMapping("/auth")
     public String auth(@RequestParam(value = "token") String token) {
         return userService.auth(token) ? "signup-success" : "error-page";
     }
-
+    
+    @ApiOperation(value = "비밀번호 재설정")
+    @ApiResponses(value = {
+            @ApiResponse(code = 409, message = "회원가입을 대기 중인 회원일 때")
+    })
     @ResponseBody
     @PostMapping("/forgot-password")
     public ResponseEntity<BaseResponse> forgotPassword(@RequestBody User user) {
@@ -47,6 +63,7 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
+    @ApiIgnore
     @GetMapping("/reset-password")
     public String resetPasswordAuth(@RequestParam(value = "token") String token, Model model) {
         Map<String, Object> result = userService.resetPasswordAuth(token);
@@ -58,6 +75,7 @@ public class UserController {
         return "reset-password";
     }
 
+    @ApiIgnore
     @PostMapping("/reset-password")
     public String resetPassword(@RequestBody Map<String, Object> variables) {
         return userService.resetPassword(variables) ? "reset-password-success" : "error-page";

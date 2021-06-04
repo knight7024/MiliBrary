@@ -4,15 +4,22 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends BaseDomain {
+    @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", required = true)
     protected String narasarangId;
+    @ApiModelProperty(value = "유저의 비밀번호", example = "1q2w3e4r!!", required = true)
     protected String password;
+    @ApiModelProperty(readOnly = true)
     protected String nickname;
-    protected Boolean isRegistered;
+    @ApiModelProperty(readOnly = true)
+    protected Boolean registered;
+    @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime registeredAt;
+    @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime createdAt;
 
@@ -44,11 +51,11 @@ public class User extends BaseDomain {
     }
 
     public Boolean getRegistered() {
-        return isRegistered;
+        return registered;
     }
 
     public void setRegistered(Boolean registered) {
-        isRegistered = registered;
+        this.registered = registered;
     }
 
     public LocalDateTime getRegisteredAt() {
@@ -71,6 +78,6 @@ public class User extends BaseDomain {
         if (user.getPassword() != null)
             password = user.getPassword();
         if (user.getRegistered() != null)
-            isRegistered = user.getRegistered();
+            registered = user.getRegistered();
     }
 }

@@ -29,7 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse createReview(int bookId, Review review) {
+    public BaseResponse createReview(int bookId, Review review) throws ConflictException {
         try {
             reviewMapper.createReview(bookId, review);
         } catch (DuplicateKeyException e) {
@@ -39,7 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getReviews(int bookId) {
+    public BaseResponse getReviews(int bookId) throws NotFoundException {
         Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId)));
         reviewListOptional.map(ReviewList::getAverageScore).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
         return new BaseResponse(null, reviewListOptional.get(), HttpStatus.OK);
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse deleteReview(int bookId, int reviewId) {
+    public BaseResponse deleteReview(int bookId, int reviewId) throws NotFoundException {
         if (reviewMapper.deleteReview(bookId, reviewId) == 0)
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
         return new BaseResponse("리뷰 삭제에 성공했습니다.", HttpStatus.NO_CONTENT);
