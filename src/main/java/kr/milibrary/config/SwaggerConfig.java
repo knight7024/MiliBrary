@@ -16,6 +16,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("kr.milibrary.controller"))
@@ -25,7 +26,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("MILIBRARY API DOCUMENT")
+                .title("MiliBrary API DOCUMENT")
                 .version("1.0.0")
                 .build();
     }

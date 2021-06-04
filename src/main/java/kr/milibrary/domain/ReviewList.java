@@ -1,12 +1,19 @@
 package kr.milibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
-public class ReviewList {
+public class ReviewList extends BaseDomain {
     protected List<Review> reviewList;
-    protected Float averageScore;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected Float averageScore = null;
 
     public ReviewList() {
+    }
+
+    public ReviewList(List<Review> reviewList) {
+        this.reviewList = reviewList;
     }
 
     public ReviewList(List<Review> reviewList, Float averageScore) {

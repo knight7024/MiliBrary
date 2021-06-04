@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public BaseResponse signUp(User user) {
+    public BaseResponse signUp(User user) throws ConflictException, DataAccessException {
         try {
             // 처음 가입하는 유저라면 DB에 저장 후 메일 전송
             user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse signUpResend(User user) {
+    public BaseResponse signUpResend(User user) throws ConflictException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
         if (dbUser.getRegistered())
             throw new ConflictException("이미 가입되어 있는 나라사랑 아이디입니다. 비밀번호를 잊으셨다면 비밀번호 초기화를 해주세요.");
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public BaseResponse forgotPassword(User user) {
+    public BaseResponse forgotPassword(User user) throws ConflictException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
         if (!dbUser.getRegistered())
             throw new ConflictException("회원가입이 완료되지 않은 아이디입니다. 계속 인증메일이 오지 않는다면 인증메일 재전송을 해주세요.");
