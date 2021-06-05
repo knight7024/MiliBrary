@@ -8,8 +8,7 @@
 ```
 * Spring Framework 4
 * Thymeleaf
-* Java 8
-* MySQL 8
+* MySQL 5.7
 * Swagger 2
 * Mybatis
 * JWT (AccessToken + RequestToken)
