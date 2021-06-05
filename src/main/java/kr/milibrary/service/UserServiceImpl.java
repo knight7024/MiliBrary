@@ -43,20 +43,20 @@ public class UserServiceImpl implements UserService {
         this.emailUtil = emailUtil;
     }
 
-    private User getUserByNarasarangId(String username) throws BadRequestException, NotFoundException {
-        if (username == null)
-            throw new BadRequestException("잘못된 요청입니다. 계속 이 메세지가 반복된다면 관리자에게 문의하세요.");
+    private User getUserByNarasarangId(String narasarangId) throws BadRequestException, NotFoundException {
+        if (narasarangId == null)
+            throw new BadRequestException("나라사랑 아이디는 빈 값일 수 없습니다.");
 
-        Optional<User> userOptional = Optional.ofNullable(userMapper.getUserByNarasarangId(username));
+        Optional<User> userOptional = Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId));
         return userOptional.orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
     }
 
     private Token getToken(String token) throws BadRequestException {
         if (token == null)
-            throw new BadRequestException("잘못된 요청입니다. 계속 이 메세지가 반복된다면 관리자에게 문의하세요.");
+            throw new BadRequestException("토큰은 빈 값일 수 없습니다.");
 
         Optional<Token> tokenOptional = Optional.ofNullable(tokenMapper.getToken(token));
-        return tokenOptional.orElseThrow(() -> new BadRequestException("잘못된 요청입니다. 계속 이 메세지가 반복된다면 관리자에게 문의하세요."));
+        return tokenOptional.orElseThrow(() -> new BadRequestException("올바르지 않는 토큰입니다."));
     }
 
     @Override

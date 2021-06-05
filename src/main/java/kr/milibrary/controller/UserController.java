@@ -23,6 +23,17 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "로그인")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "로그인에 성공했을 때")
+    })
+    @ResponseBody
+    @PostMapping("/signin")
+    public ResponseEntity<BaseResponse> signIn(@RequestBody User user) {
+        BaseResponse response = userService.signIn(user);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
     @ApiOperation(value = "회원가입")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "회원가입에 성공했을 때"),
