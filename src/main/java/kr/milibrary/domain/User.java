@@ -14,8 +14,7 @@ public class User extends BaseDomain {
     protected String password;
     @ApiModelProperty(readOnly = true)
     protected String nickname;
-    @ApiModelProperty(readOnly = true)
-    protected Boolean registered;
+    protected Boolean isRegistered;
     @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime registeredAt;
@@ -50,12 +49,13 @@ public class User extends BaseDomain {
         this.nickname = nickname;
     }
 
+    @ApiModelProperty(readOnly = true)
     public Boolean getRegistered() {
-        return registered;
+        return isRegistered;
     }
 
     public void setRegistered(Boolean registered) {
-        this.registered = registered;
+        isRegistered = registered;
     }
 
     public LocalDateTime getRegisteredAt() {
@@ -78,6 +78,6 @@ public class User extends BaseDomain {
         if (user.getPassword() != null)
             password = user.getPassword();
         if (user.getRegistered() != null)
-            registered = user.getRegistered();
+            isRegistered = user.getRegistered();
     }
 }
