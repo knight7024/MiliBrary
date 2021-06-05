@@ -11,6 +11,6 @@
 * MySQL 5.7
 * Swagger 2
 * Mybatis
-* JWT (AccessToken + RequestToken)
+* JWT (AccessToken + RefreshToken)
 * Redis
 ```
