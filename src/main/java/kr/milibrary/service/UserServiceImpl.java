@@ -1,6 +1,5 @@
 package kr.milibrary.service;
 
-import jdk.nashorn.internal.runtime.options.Option;
 import kr.milibrary.domain.*;
 import kr.milibrary.exception.BadRequestException;
 import kr.milibrary.exception.ConflictException;
@@ -10,29 +9,26 @@ import kr.milibrary.mapper.TokenMapper;
 import kr.milibrary.mapper.UserMapper;
 import kr.milibrary.util.EmailUtil;
 import kr.milibrary.util.JwtUtil;
-import kr.milibrary.util.RedisUtil;
 import kr.milibrary.util.SHA256Util;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-// Todo: 모든 메일 전송하는 메소드에서 1시간 이내로 메일 보냈는지 여부 확인 필요
+// ToDo: 유저의 pk를 id로 변경하고 그에 따라 domain과 로직 일부 수정 필요. AccessToken에 유저의 id를 담도록 변경. 인터셉터 추가
 @Service("userService")
 public class UserServiceImpl implements UserService {
     @Value("${env.prod.contextURL}")
@@ -41,8 +37,8 @@ public class UserServiceImpl implements UserService {
     private final TokenMapper tokenMapper;
     private final EmailUtil emailUtil;
     private final JwtUtil jwtUtil;
-    @Qualifier("redisUtil")
-    private RedisUtil<String, String> stringStringRedisUtil;
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, TokenMapper tokenMapper, EmailUtil emailUtil, JwtUtil jwtUtil) {
@@ -56,32 +52,34 @@ public class UserServiceImpl implements UserService {
         if (narasarangId == null)
             throw new BadRequestException("나라사랑 아이디는 빈 값일 수 없습니다.");
 
-        Optional<User> userOptional = Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId));
-        return userOptional.orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
+        return Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId)).orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
     }
 
     private Token getToken(String token) throws BadRequestException {
         if (token == null)
             throw new BadRequestException("토큰은 빈 값일 수 없습니다.");
 
-        Optional<Token> tokenOptional = Optional.ofNullable(tokenMapper.getToken(token));
-        return tokenOptional.orElseThrow(() -> new BadRequestException("올바르지 않는 토큰입니다."));
+        return Optional.ofNullable(tokenMapper.getToken(token)).orElseThrow(() -> new BadRequestException("올바르지 않는 토큰입니다."));
     }
 
     @Override
-    public BaseResponse signIn(User user) {
+    public BaseResponse signIn(User user) throws UnauthorizedException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
         if (BCrypt.checkpw(user.getPassword(), dbUser.getPassword())) {
             if (!dbUser.getRegistered())
                 throw new UnauthorizedException("본인인증이 아직 완료되지 않은 아이디입니다.");
 
             String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
-            HashOperations<String, Object, Object> hashOperations = stringStringRedisUtil.getHashOperations();
+            final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
 
             // Redis에 저장된 Refresh Token이 없거나 기간이 만료됐다면 새로 발급한다.
             Optional<String> refreshTokenOptional = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()))
                     .filter(token -> !jwtUtil.isExpired(token));
-            String refreshToken = refreshTokenOptional.orElseGet(() -> jwtUtil.createRefreshToken(dbUser.getNarasarangId()));
+            String refreshToken = refreshTokenOptional.orElseGet(() -> {
+                String token = jwtUtil.createRefreshToken(dbUser.getNarasarangId());
+                hashOperations.put(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType(), token);
+                return token;
+            });
             String accessToken = jwtUtil.createAccessToken(false);
 
             dbUser.setJwt(new Jwt(accessToken, refreshToken));
@@ -89,6 +87,19 @@ public class UserServiceImpl implements UserService {
             throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
 
         return new BaseResponse("로그인에 성공했습니다.", dbUser, HttpStatus.OK);
+    }
+
+    @Override
+    public BaseResponse signOut(User user) {
+        User dbUser = getUserByNarasarangId(user.getNarasarangId());
+
+        String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
+        final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
+
+        Optional<String> refreshTokenOptional = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()));
+        refreshTokenOptional.ifPresent(token -> hashOperations.delete(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()));
+
+        return new BaseResponse("로그아웃이 완료되었습니다.", HttpStatus.NO_CONTENT);
     }
 
     @Transactional
@@ -117,6 +128,7 @@ public class UserServiceImpl implements UserService {
         } catch (DuplicateKeyException e) {
             throw new ConflictException("이미 가입되어 있는 나라사랑 아이디입니다.");
         }
+
         return new BaseResponse("회원가입을 요청했습니다. 나라사랑포털 이메일로 이동해서 본인인증을 완료해주세요.", HttpStatus.CREATED);
     }
 
@@ -137,6 +149,7 @@ public class UserServiceImpl implements UserService {
             put("contextURL", contextURL);
         }});
         emailUtil.sendEmail(mail, registerToken.getTokenTypeEnum().getTemplateName());
+
         return new BaseResponse("인증메일을 재전송했습니다. 나라사랑포털 이메일로 이동해서 본인인증을 완료해주세요.", HttpStatus.CREATED);
     }
 
@@ -165,6 +178,7 @@ public class UserServiceImpl implements UserService {
         } catch (DataAccessException e) {
             return false;
         }
+
         return !isExpired;
     }
 
@@ -185,6 +199,7 @@ public class UserServiceImpl implements UserService {
             put("contextURL", contextURL);
         }});
         emailUtil.sendEmail(mail, resetToken.getTokenTypeEnum().getTemplateName());
+
         return new BaseResponse("비밀번호 재설정을 요청했습니다. 나라사랑포털 이메일로 이동해서 비밀번호 재설정을 진행해주세요.", HttpStatus.CREATED);
     }
 
@@ -209,6 +224,7 @@ public class UserServiceImpl implements UserService {
 
         variables.put("isExpired", dbToken.isExpired(1));
         variables.replace("success", true);
+
         return variables;
     }
 
@@ -233,6 +249,7 @@ public class UserServiceImpl implements UserService {
         } catch (DataAccessException e) {
             return false;
         }
+
         return true;
     }
 }

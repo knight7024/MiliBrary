@@ -24,8 +24,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private Review getReviewById(int bookId, int reviewId) throws NotFoundException {
-        Optional<Review> reviewOptional = Optional.ofNullable(reviewMapper.getReviewById(bookId, reviewId));
-        return reviewOptional.orElseThrow(() -> new NotFoundException("해당 리뷰가 존재하지 않습니다."));
+        return Optional.ofNullable(reviewMapper.getReviewById(bookId, reviewId)).orElseThrow(() -> new NotFoundException("해당 리뷰가 존재하지 않습니다."));
     }
 
     @Override
@@ -35,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
         } catch (DuplicateKeyException e) {
             throw new ConflictException("리뷰는 중복해서 작성할 수 없습니다.");
         }
+
         return new BaseResponse("리뷰 작성에 성공했습니다.", getReviewById(bookId, review.getId()), HttpStatus.CREATED);
     }
 
@@ -42,6 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse getReviews(int bookId) throws NotFoundException {
         Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId)));
         reviewListOptional.map(ReviewList::getAverageScore).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
+
         return new BaseResponse(null, reviewListOptional.get(), HttpStatus.OK);
     }
 
@@ -50,6 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review dbReview = getReviewById(bookId, reviewId);
         dbReview.update(review);
         reviewMapper.updateReview(bookId, reviewId, dbReview);
+
         return new BaseResponse("리뷰 수정에 성공했습니다.", dbReview, HttpStatus.CREATED);
     }
 
@@ -57,12 +59,14 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse deleteReview(int bookId, int reviewId) throws NotFoundException {
         if (reviewMapper.deleteReview(bookId, reviewId) == 0)
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
+
         return new BaseResponse("리뷰 삭제에 성공했습니다.", HttpStatus.NO_CONTENT);
     }
 
     @Override
     public BaseResponse getRandomReviews(Integer size) {
         size = Optional.ofNullable(size).orElse(5);
+
         return new BaseResponse(null, new ReviewList(reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
 }

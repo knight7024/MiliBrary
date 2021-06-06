@@ -25,12 +25,28 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "로그인에 성공했을 때")
+            @ApiResponse(code = 200, message = "로그인에 성공했을 때"),
+            @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
+            @ApiResponse(code = 401, message = "비밀번호가 틀렸거나 본인인증이 완료되지 않았을 때"),
+            @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
     })
     @ResponseBody
     @PostMapping("/signin")
     public ResponseEntity<BaseResponse> signIn(@RequestBody User user) {
         BaseResponse response = userService.signIn(user);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
+    @ApiOperation(value = "로그아웃")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "로그아웃에 성공했을 때"),
+            @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
+            @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
+    })
+    @ResponseBody
+    @PostMapping("/signout")
+    public ResponseEntity<BaseResponse> signOut(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @RequestBody User user) {
+        BaseResponse response = userService.signOut(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -48,6 +64,9 @@ public class UserController {
 
     @ApiOperation(value = "회원가입 인증메일 재전송")
     @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "인증메일 재전송에 성공했을 때"),
+            @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
+            @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
     })
     @ResponseBody
@@ -65,11 +84,13 @@ public class UserController {
     
     @ApiOperation(value = "비밀번호 재설정")
     @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
+            @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "회원가입을 대기 중인 회원일 때")
     })
     @ResponseBody
     @PostMapping("/forgot-password")
-    public ResponseEntity<BaseResponse> forgotPassword(@RequestBody User user) {
+    public ResponseEntity<BaseResponse> forgotPassword(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @RequestBody User user) {
         BaseResponse response = userService.forgotPassword(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
