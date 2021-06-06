@@ -22,6 +22,8 @@ public class User extends BaseDomain {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime createdAt;
 
+    protected Jwt jwt = null;
+
     public User() {
     }
 
@@ -72,6 +74,14 @@ public class User extends BaseDomain {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Jwt getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(Jwt jwt) {
+        this.jwt = jwt;
     }
 
     public void update(User user) {

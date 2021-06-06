@@ -16,8 +16,9 @@
         <property name="order" value="1"/>
     </bean>
 
+    <bean id="swaggerConfig" class="kr.milibrary.config.SwaggerConfig"/>
+
     <context:component-scan base-package="kr.milibrary.controller"/>
-    <context:component-scan base-package="kr.milibrary.config"/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
