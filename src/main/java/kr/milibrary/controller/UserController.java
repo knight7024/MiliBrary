@@ -53,6 +53,19 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
+    @Auth
+    @ApiOperation(value = "토큰 갱신", authorizations = {@Authorization(value = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "토큰 갱신에 성공했을 때"),
+            @ApiResponse(code = 401, message = "Refresh Token이 유효하지 않을 때"),
+    })
+    @ResponseBody
+    @PostMapping("/refresh")
+    public ResponseEntity<BaseResponse> refresh(@JwtSession @ApiParam(hidden = true) String narasarangId) {
+        BaseResponse response = userService.refresh(narasarangId);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
     @ApiOperation(value = "회원가입")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "회원가입에 성공했을 때"),

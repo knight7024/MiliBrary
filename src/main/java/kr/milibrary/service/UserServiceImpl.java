@@ -132,6 +132,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public BaseResponse refresh(String narasarangId) {
+        User dbUser = getUserByNarasarangId(narasarangId);
+
+        String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
+        final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
+
+        // Redis에 저장된 Refresh Token이 존재하고 유효하다면
+        String refreshToken = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()))
+                .filter(token -> !jwtUtil.isExpired(token))
+                .orElseThrow(() -> new UnauthorizedException("Refresh Token이 만료되었습니다. 다시 로그인해주세요."));
+        String accessToken = jwtUtil.createAccessToken(dbUser.getNarasarangId(), false);
+
+        dbUser.setJwt(new Jwt(accessToken, refreshToken));
+
+        return new BaseResponse("Access Token 갱신이 완료되었습니다.", dbUser, HttpStatus.OK);
+    }
+
+    @Override
     public BaseResponse signUpResend(User user) throws ConflictException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
         if (dbUser.getRegistered())
