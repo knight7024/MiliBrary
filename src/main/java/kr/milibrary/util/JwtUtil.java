@@ -1,12 +1,13 @@
 package kr.milibrary.util;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Payload;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,6 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class JwtUtil {
@@ -69,13 +69,25 @@ public class JwtUtil {
     // 4. 토큰의 변조 여부
     public boolean isValid(String jwt, JwtType jwtType) {
         try {
-            Optional<DecodedJWT> decodedJWTOptional = Optional.ofNullable(jwt)
-                    .filter(t -> !isExpired(t))
-                    .map(JWT::decode);
-            if (decodedJWTOptional.isPresent()) {
-                DecodedJWT decodeJWT = decodedJWTOptional.get();
-                return ISSUER.equals(decodeJWT.getIssuer()) & jwtType.getJwtType().equals(decodeJWT.getSubject()) & !decodeJWT.getAudience().isEmpty();
-            }
+            JWTVerifier jwtVerifier = JWT.require(algorithmHS)
+                    .withIssuer(ISSUER)
+                    .withSubject(jwtType.getJwtType())
+                    .build();
+            DecodedJWT decodedJWT = jwtVerifier.verify(jwt);
+            return !decodedJWT.getAudience().isEmpty();
+        } catch (JWTVerificationException jwtVerificationException) {
+            return false;
+        }
+    }
+
+    public boolean forAdmin(String jwt) {
+        try {
+            JWTVerifier jwtVerifier = JWT.require(algorithmHS)
+                    .withIssuer(ISSUER)
+                    .withSubject(JwtType.ACCESS_TOKEN.getJwtType())
+                    .withClaim("isAdmin", true)
+                    .build();
+            jwtVerifier.verify(jwt);
         } catch (JWTVerificationException jwtVerificationException) {
             return false;
         }
@@ -83,18 +95,9 @@ public class JwtUtil {
         return true;
     }
 
-    public boolean forAdmin(String jwt) {
-        DecodedJWT decodedJWT = Optional.ofNullable(jwt)
-                .filter(t -> isValid(t, JwtType.ACCESS_TOKEN))
-                .map(JWT::decode)
-                .orElseThrow(() -> new JWTDecodeException(""));
-
-        return decodedJWT.getClaim("isAdmin").asBoolean();
-    }
-
     public boolean isExpired(String jwt) {
         try {
-            JWT.decode(jwt);
+            JWT.require(algorithmHS).build().verify(jwt);
         } catch (TokenExpiredException tokenExpiredException) {
             return true;
         }
@@ -105,7 +108,7 @@ public class JwtUtil {
     public DecodedJWT getDecodedJWT(String jwt) {
         try {
             return JWT.decode(jwt);
-        } catch (JWTVerificationException jwtVerificationException) {
+        } catch (JWTDecodeException jwtDecodeException) {
             return null;
         }
     }
