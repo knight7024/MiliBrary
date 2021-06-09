@@ -1,6 +1,8 @@
 package kr.milibrary.controller;
 
 import io.swagger.annotations.*;
+import kr.milibrary.annotation.Auth;
+import kr.milibrary.annotation.AuthIgnore;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Review;
 import kr.milibrary.domain.ReviewList;
@@ -9,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
+@Auth
 @RequestMapping("/api")
 @RestController
 public class ReviewController {
@@ -30,6 +35,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
+    @AuthIgnore
     @ApiOperation(value = "특정 책에 대한 전체 리뷰 불러오기")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class),
@@ -63,6 +69,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
+    @AuthIgnore
     @ApiOperation(value = "오늘의 랜덤 리뷰")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)

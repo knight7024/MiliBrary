@@ -21,6 +21,9 @@
     <context:component-scan base-package="kr.milibrary.controller"/>
 
     <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="kr.milibrary.resolver.JwtSessionHandlerMethodArgumentResolver" />
+        </mvc:argument-resolvers>
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <property name="supportedMediaTypes">
@@ -31,5 +34,12 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/api/**"/>
+            <bean class="kr.milibrary.interceptor.AuthInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

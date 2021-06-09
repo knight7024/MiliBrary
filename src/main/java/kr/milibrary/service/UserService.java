@@ -11,7 +11,7 @@ public interface UserService {
     BaseResponse signUp(User user);
     BaseResponse signUpResend(User user);
     BaseResponse signIn(User user);
-    BaseResponse signOut(User user);
+    BaseResponse signOut(String narasarangId);
     boolean auth(String token);
     BaseResponse forgotPassword(User user);
     Map<String, Object> resetPasswordAuth(String token);

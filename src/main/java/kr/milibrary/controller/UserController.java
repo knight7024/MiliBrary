@@ -1,6 +1,8 @@
 package kr.milibrary.controller;
 
 import io.swagger.annotations.*;
+import kr.milibrary.annotation.Auth;
+import kr.milibrary.annotation.JwtSession;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.User;
 import kr.milibrary.service.UserService;
@@ -37,7 +39,8 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "로그아웃")
+    @Auth
+    @ApiOperation(value = "로그아웃", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "로그아웃에 성공했을 때"),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
@@ -45,8 +48,8 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/signout")
-    public ResponseEntity<BaseResponse> signOut(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @RequestBody User user) {
-        BaseResponse response = userService.signOut(user);
+    public ResponseEntity<BaseResponse> signOut(@JwtSession @ApiParam(hidden = true) String narasarangId) {
+        BaseResponse response = userService.signOut(narasarangId);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -81,8 +84,9 @@ public class UserController {
     public String auth(@RequestParam(value = "token") String token) {
         return userService.auth(token) ? "signup-success" : "error-page";
     }
-    
-    @ApiOperation(value = "비밀번호 재설정")
+
+    @Auth
+    @ApiOperation(value = "비밀번호 재설정", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),

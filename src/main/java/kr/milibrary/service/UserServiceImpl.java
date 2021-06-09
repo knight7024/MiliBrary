@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-// ToDo: 유저의 pk를 id로 변경하고 그에 따라 domain과 로직 일부 수정 필요. AccessToken에 유저의 id를 담도록 변경. 인터셉터 추가
 @Service("userService")
 public class UserServiceImpl implements UserService {
     @Value("${env.prod.contextURL}")
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService {
         if (token == null)
             throw new BadRequestException("토큰은 빈 값일 수 없습니다.");
 
-        return Optional.ofNullable(tokenMapper.getToken(token)).orElseThrow(() -> new BadRequestException("올바르지 않는 토큰입니다."));
+        return Optional.ofNullable(tokenMapper.getToken(token)).orElseThrow(() -> new BadRequestException("올바르지 않은 토큰입니다."));
     }
 
     @Override
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
                 hashOperations.put(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType(), token);
                 return token;
             });
-            String accessToken = jwtUtil.createAccessToken(false);
+            String accessToken = jwtUtil.createAccessToken(dbUser.getNarasarangId(), false);
 
             dbUser.setJwt(new Jwt(accessToken, refreshToken));
         } else
@@ -90,8 +89,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse signOut(User user) {
-        User dbUser = getUserByNarasarangId(user.getNarasarangId());
+    public BaseResponse signOut(String narasarangId) {
+        User dbUser = getUserByNarasarangId(narasarangId);
+        System.out.println(narasarangId);
 
         String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
         final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
