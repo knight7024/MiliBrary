@@ -91,7 +91,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResponse signOut(String narasarangId) {
         User dbUser = getUserByNarasarangId(narasarangId);
-        System.out.println(narasarangId);
 
         String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
         final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
@@ -99,7 +98,7 @@ public class UserServiceImpl implements UserService {
         Optional<String> refreshTokenOptional = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()));
         refreshTokenOptional.ifPresent(token -> hashOperations.delete(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()));
 
-        return new BaseResponse("로그아웃이 완료되었습니다.", HttpStatus.NO_CONTENT);
+        return new BaseResponse("로그아웃이 완료되었습니다.", HttpStatus.OK);
     }
 
     @Transactional

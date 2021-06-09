@@ -13,7 +13,7 @@ public class Review extends BaseDomain {
     protected Integer id;
     @ApiModelProperty(readOnly = true)
     protected Integer bookId;
-    @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", required = true)
+    @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", readOnly = true)
     protected String narasarangId;
     @ApiModelProperty(value = "유저가 매긴 평점(소수점 첫째 자리까지)", example = "2.5", required = true)
     protected Float score;

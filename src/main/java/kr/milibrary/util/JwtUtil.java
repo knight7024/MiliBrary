@@ -65,7 +65,8 @@ public class JwtUtil {
 
     // 1. 토큰의 만료 여부
     // 2. 토큰의 발행자
-    // 3. 토큰의 변조 여부
+    // 3. 토큰 발행 대상자 존재 여부
+    // 4. 토큰의 변조 여부
     public boolean isValid(String jwt, JwtType jwtType) {
         try {
             Optional<DecodedJWT> decodedJWTOptional = Optional.ofNullable(jwt)
@@ -73,7 +74,7 @@ public class JwtUtil {
                     .map(JWT::decode);
             if (decodedJWTOptional.isPresent()) {
                 DecodedJWT decodeJWT = decodedJWTOptional.get();
-                return ISSUER.equals(decodeJWT.getIssuer()) & jwtType.getJwtType().equals(decodeJWT.getSubject());
+                return ISSUER.equals(decodeJWT.getIssuer()) & jwtType.getJwtType().equals(decodeJWT.getSubject()) & !decodeJWT.getAudience().isEmpty();
             }
         } catch (JWTVerificationException jwtVerificationException) {
             return false;

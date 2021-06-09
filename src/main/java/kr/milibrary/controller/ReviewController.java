@@ -3,6 +3,7 @@ package kr.milibrary.controller;
 import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
 import kr.milibrary.annotation.AuthIgnore;
+import kr.milibrary.annotation.JwtSession;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Review;
 import kr.milibrary.domain.ReviewList;
@@ -30,8 +31,8 @@ public class ReviewController {
             @ApiResponse(code = 409, message = "리뷰를 중복해서 작성했을 때")
     })
     @PostMapping("/book/{bookId}/review")
-    public ResponseEntity<BaseResponse> createReview(@PathVariable int bookId, @RequestBody Review review) {
-        BaseResponse response = reviewService.createReview(bookId, review);
+    public ResponseEntity<BaseResponse> createReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @RequestBody Review review) {
+        BaseResponse response = reviewService.createReview(narasarangId, bookId, review);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -53,8 +54,8 @@ public class ReviewController {
             @ApiResponse(code = 404, message = "입력한 리뷰 id가 존재하지 않을 때")
     })
     @PatchMapping("/book/{bookId}/review/{reviewId}")
-    public ResponseEntity<BaseResponse> updateReview(@PathVariable int bookId, @PathVariable int reviewId, @RequestBody Review review) {
-        BaseResponse response = reviewService.updateReview(bookId, reviewId, review);
+    public ResponseEntity<BaseResponse> updateReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @PathVariable int reviewId, @RequestBody Review review) {
+        BaseResponse response = reviewService.updateReview(narasarangId, bookId, reviewId, review);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -64,8 +65,8 @@ public class ReviewController {
             @ApiResponse(code = 404, message = "입력한 리뷰 id가 존재하지 않을 때")
     })
     @DeleteMapping("/book/{bookId}/review/{reviewId}")
-    public ResponseEntity<BaseResponse> deleteReview(@PathVariable int bookId, @PathVariable int reviewId) {
-        BaseResponse response = reviewService.deleteReview(bookId, reviewId);
+    public ResponseEntity<BaseResponse> deleteReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @PathVariable int reviewId) {
+        BaseResponse response = reviewService.deleteReview(narasarangId, bookId, reviewId);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 

@@ -85,8 +85,7 @@ public class UserController {
         return userService.auth(token) ? "signup-success" : "error-page";
     }
 
-    @Auth
-    @ApiOperation(value = "비밀번호 재설정", authorizations = {@Authorization(value = "Authorization")})
+    @ApiOperation(value = "비밀번호 재설정")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
