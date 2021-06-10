@@ -23,8 +23,8 @@ public class Token extends BaseDomain {
         RESEND_REGISTRATION("resend_registration", "signup")
         ;
 
-        private String tokenType;
-        private String templateName;
+        private final String tokenType;
+        private final String templateName;
 
         TokenType(String tokenType, String templateName) {
             this.tokenType = tokenType;
@@ -35,16 +35,8 @@ public class Token extends BaseDomain {
             return tokenType;
         }
 
-        public void setTokenType(String tokenType) {
-            this.tokenType = tokenType;
-        }
-
         public String getTemplateName() {
             return templateName;
-        }
-
-        public void setTemplateName(String templateName) {
-            this.templateName = templateName;
         }
     }
 

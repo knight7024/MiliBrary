@@ -2,14 +2,14 @@ package kr.milibrary.domain;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends BaseDomain {
     @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", required = true)
     protected String narasarangId;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ApiModelProperty(value = "유저의 비밀번호", example = "1q2w3e4r!!", required = true)
     protected String password;
     @ApiModelProperty(readOnly = true)
@@ -21,6 +21,9 @@ public class User extends BaseDomain {
     @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime createdAt;
+
+    @ApiModelProperty(hidden = true)
+    protected Jwt jwt = null;
 
     public User() {
     }
@@ -72,6 +75,15 @@ public class User extends BaseDomain {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @JsonGetter("tokens")
+    public Jwt getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(Jwt jwt) {
+        this.jwt = jwt;
     }
 
     public void update(User user) {
