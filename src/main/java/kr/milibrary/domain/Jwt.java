@@ -1,9 +1,11 @@
 package kr.milibrary.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Jwt {
+    @ApiModelProperty(readOnly = true)
     private String accessToken;
     private String refreshToken;
 

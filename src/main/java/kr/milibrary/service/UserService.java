@@ -1,6 +1,7 @@
 package kr.milibrary.service;
 
 import kr.milibrary.domain.BaseResponse;
+import kr.milibrary.domain.Jwt;
 import kr.milibrary.domain.Token;
 import kr.milibrary.domain.User;
 
@@ -12,7 +13,7 @@ public interface UserService {
     BaseResponse signUpResend(User user);
     BaseResponse signIn(User user);
     BaseResponse signOut(String narasarangId);
-    BaseResponse refresh(String narasarangId);
+    BaseResponse refresh(Jwt jwt);
     boolean auth(String token);
     BaseResponse forgotPassword(User user);
     Map<String, Object> resetPasswordAuth(String token);

@@ -56,9 +56,9 @@ public class UserServiceImpl implements UserService {
 
     private Token getToken(String token) throws BadRequestException {
         if (token == null)
-            throw new BadRequestException("토큰은 빈 값일 수 없습니다.");
+            throw new BadRequestException("인증 토큰은 빈 값일 수 없습니다.");
 
-        return Optional.ofNullable(tokenMapper.getToken(token)).orElseThrow(() -> new BadRequestException("올바르지 않은 토큰입니다."));
+        return Optional.ofNullable(tokenMapper.getToken(token)).orElseThrow(() -> new BadRequestException("올바르지 않은 인증 토큰입니다."));
     }
 
     @Override
@@ -132,19 +132,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse refresh(String narasarangId) {
+    public BaseResponse refresh(Jwt jwt) {
+        if (!jwtUtil.isValid(jwt.getRefreshToken(), JwtUtil.JwtType.REFRESH_TOKEN))
+            throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 Refresh Token입니다.");
+
+        String narasarangId = jwtUtil.getDecodedJWT(jwt.getRefreshToken()).getAudience().get(0);
         User dbUser = getUserByNarasarangId(narasarangId);
 
         String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
         final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
 
-        // Redis에 저장된 Refresh Token이 존재하고 유효하다면
+        // Redis에 저장된 Refresh Token이 존재하고 입력받은 것과 동일하다면
         String refreshToken = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()))
-                .filter(token -> !jwtUtil.isExpired(token))
-                .orElseThrow(() -> new UnauthorizedException("Refresh Token이 만료되었습니다. 다시 로그인해주세요."));
+                .filter(t -> t.equals(jwt.getRefreshToken()))
+                .orElseThrow(() -> new UnauthorizedException("잘못된 경로로 접속하셨습니다. 다시 로그인해주세요."));
         String accessToken = jwtUtil.createAccessToken(dbUser.getNarasarangId(), false);
 
-        dbUser.setJwt(new Jwt(accessToken, refreshToken));
+        dbUser.setJwt(new Jwt(accessToken, null));
 
         return new BaseResponse("Access Token 갱신이 완료되었습니다.", dbUser, HttpStatus.OK);
     }
@@ -167,7 +171,7 @@ public class UserServiceImpl implements UserService {
         }});
         emailUtil.sendEmail(mail, registerToken.getTokenTypeEnum().getTemplateName());
 
-        return new BaseResponse("인증메일을 재전송했습니다. 나라사랑포털 이메일로 이동해서 본인인증을 완료해주세요.", HttpStatus.CREATED);
+        return new BaseResponse("인증 메일을 재전송했습니다. 나라사랑포털 이메일로 이동해서 본인인증을 완료해주세요.", HttpStatus.CREATED);
     }
 
     @Override
@@ -204,7 +208,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse forgotPassword(User user) throws ConflictException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
         if (!dbUser.getRegistered())
-            throw new ConflictException("회원가입이 완료되지 않은 아이디입니다. 계속 인증메일이 오지 않는다면 인증메일 재전송을 해주세요.");
+            throw new ConflictException("회원가입이 완료되지 않은 아이디입니다. 계속 인증 메일이 오지 않는다면 인증 메일 재전송을 해주세요.");
 
         LocalDateTime now = LocalDateTime.now();
         Token resetToken = new Token(user.getNarasarangId(), SHA256Util.getEncrypt(user.getNarasarangId(), now.toString()), Token.TokenType.FORGOT_PASSWORD);

@@ -48,7 +48,7 @@ public class JwtUtil {
         return JWT.create()
                 .withSubject(JwtType.ACCESS_TOKEN.getJwtType())
                 .withAudience(narasarangId)
-                .withExpiresAt(Date.from(LocalDateTime.now().plusHours(2).atZone(ZoneId.systemDefault()).toInstant()))
+                .withExpiresAt(Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant()))
                 .withClaim("isAdmin", isAdmin)
                 .withIssuer(ISSUER)
                 .sign(algorithmHS);
@@ -67,7 +67,6 @@ public class JwtUtil {
     // 2. 토큰의 발행자
     // 3. 토큰 발행 대상자 존재 여부
     // 4. 토큰의 변조 여부
-    // ToDo: Expired한 토큰일 때 Refresh 어떻게 할 지 고민
     public boolean isValid(String jwt, JwtType jwtType) {
         try {
             JWTVerifier jwtVerifier = JWT.require(algorithmHS)

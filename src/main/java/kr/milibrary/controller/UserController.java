@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
 import kr.milibrary.annotation.JwtSession;
 import kr.milibrary.domain.BaseResponse;
+import kr.milibrary.domain.Jwt;
 import kr.milibrary.domain.User;
 import kr.milibrary.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +54,15 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @Auth
-    @ApiOperation(value = "토큰 갱신", authorizations = {@Authorization(value = "Authorization")})
+    @ApiOperation(value = "Access Token 갱신")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "토큰 갱신에 성공했을 때"),
+            @ApiResponse(code = 200, message = "Access Token 갱신에 성공했을 때"),
             @ApiResponse(code = 401, message = "Refresh Token이 유효하지 않을 때"),
     })
     @ResponseBody
     @PostMapping("/refresh")
-    public ResponseEntity<BaseResponse> refresh(@JwtSession @ApiParam(hidden = true) String narasarangId) {
-        BaseResponse response = userService.refresh(narasarangId);
+    public ResponseEntity<BaseResponse> refresh(@RequestBody Jwt jwt) {
+        BaseResponse response = userService.refresh(jwt);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -78,9 +78,9 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "회원가입 인증메일 재전송")
+    @ApiOperation(value = "회원가입 인증 메일 재전송")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "인증메일 재전송에 성공했을 때"),
+            @ApiResponse(code = 200, message = "인증 메일 재전송에 성공했을 때"),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
