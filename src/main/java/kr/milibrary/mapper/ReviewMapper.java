@@ -14,13 +14,25 @@ public interface ReviewMapper {
     @Options(useGeneratedKeys = true, keyProperty = "review.id")
     void createReview(@Param("bookId") int bookId, @Param("review") Review review) throws DataAccessException;
 
-    @Select("SELECT * FROM milibrary.reviews WHERE book_id = #{bookId} ORDER BY created_at DESC;")
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT narasarang_id, nickname FROM milibrary.users" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
+            "ORDER BY created_at DESC;")
     List<Review> getReviews(@Param("bookId") int bookId);
 
     @Select("SELECT ROUND(AVG(score), 1) AS averageScore FROM milibrary.reviews WHERE book_id = #{bookId} GROUP BY book_id;")
     Float getAverageScore(@Param("bookId") int bookId);
 
-    @Select("SELECT * FROM milibrary.reviews WHERE id = #{reviewId} AND book_id = #{bookId};")
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT narasarang_id, nickname FROM milibrary.users" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = t2.narasarang_id AND id = #{reviewId} AND book_id = #{bookId} " +
+            "ORDER BY created_at DESC;")
     Review getReviewById(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     @Update("UPDATE milibrary.reviews SET score = #{review.score}, comment = #{review.comment} WHERE id = #{reviewId} AND book_id = #{bookId};")
@@ -30,12 +42,18 @@ public interface ReviewMapper {
     int deleteReview(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     // Covering Index
-    @Select("SELECT * FROM milibrary.reviews AS t1 " +
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t3.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM (" +
+            "milibrary.reviews AS t1 " +
             "JOIN (" +
             "SELECT id FROM milibrary.reviews ORDER BY RAND() LIMIT #{size}" +
             ") AS t2 " +
-            "ON t1.id = t2.id " +
-            "ORDER BY t1.created_at DESC;"
-    )
+            "ON t1.id = t2.id" +
+            ") " +
+            "JOIN (" +
+            "SELECT narasarang_id, nickname FROM milibrary.users" +
+            ") AS t3 " +
+            "ON t1.narasarang_id = t3.narasarang_id " +
+            "ORDER BY t1.created_at DESC;")
     List<Review> getRandomReviews(@Param("size") Integer size);
 }
