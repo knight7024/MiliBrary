@@ -26,6 +26,9 @@ public class Review extends BaseDomain {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime updatedAt;
 
+    @ApiModelProperty(hidden = true)
+    protected String nickname;
+
     public Review() {
     }
 
@@ -83,6 +86,10 @@ public class Review extends BaseDomain {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     public void update(Review review) {
