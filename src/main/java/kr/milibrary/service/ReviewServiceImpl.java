@@ -46,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ConflictException("리뷰는 중복해서 작성할 수 없습니다.");
         }
 
-        return new BaseResponse("리뷰 작성에 성공했습니다.", getReviewById(bookId, review.getId()), HttpStatus.CREATED);
+        return new BaseResponse(getReviewById(bookId, review.getId()), HttpStatus.CREATED);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId)));
         reviewListOptional.map(ReviewList::getAverageScore).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
 
-        return new BaseResponse(null, reviewListOptional.get(), HttpStatus.OK);
+        return new BaseResponse(reviewListOptional.get(), HttpStatus.OK);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ReviewServiceImpl implements ReviewService {
         dbReview.update(review);
         reviewMapper.updateReview(bookId, reviewId, dbReview);
 
-        return new BaseResponse("리뷰 수정에 성공했습니다.", dbReview, HttpStatus.CREATED);
+        return new BaseResponse(dbReview, HttpStatus.CREATED);
     }
 
     @Override
@@ -75,13 +75,13 @@ public class ReviewServiceImpl implements ReviewService {
         if (reviewMapper.deleteReview(bookId, reviewId) == 0)
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
 
-        return new BaseResponse("리뷰 삭제에 성공했습니다.", HttpStatus.NO_CONTENT);
+        return new BaseResponse(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public BaseResponse getRandomReviews(Integer size) {
         size = Optional.ofNullable(size).orElse(5);
 
-        return new BaseResponse(null, new ReviewList(reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size)), HttpStatus.OK);
+        return new BaseResponse(new ReviewList(reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
 }

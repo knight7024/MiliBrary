@@ -61,8 +61,8 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/refresh")
-    public ResponseEntity<BaseResponse> refresh(@RequestBody Jwt jwt) {
-        BaseResponse response = userService.refresh(jwt);
+    public ResponseEntity<BaseResponse> refresh(@RequestBody Jwt.RefreshToken refreshToken) {
+        BaseResponse response = userService.refresh(refreshToken);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
