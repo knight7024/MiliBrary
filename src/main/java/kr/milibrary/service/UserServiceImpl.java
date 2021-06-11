@@ -1,5 +1,6 @@
 package kr.milibrary.service;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import kr.milibrary.domain.*;
 import kr.milibrary.exception.BadRequestException;
 import kr.milibrary.exception.ConflictException;
@@ -23,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -136,7 +139,9 @@ public class UserServiceImpl implements UserService {
         if (!jwtUtil.isValid(refreshToken.getToken(), JwtUtil.JwtType.REFRESH_TOKEN))
             throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 Refresh Token입니다.");
 
-        String narasarangId = jwtUtil.getDecodedJWT(refreshToken.getToken()).getAudience().get(0);
+        DecodedJWT decodedRefreshToken = jwtUtil.getDecodedJWT(refreshToken.getToken());
+
+        String narasarangId = decodedRefreshToken.getAudience().get(0);
         User dbUser = getUserByNarasarangId(narasarangId);
 
         String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
@@ -148,7 +153,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UnauthorizedException("잘못된 경로로 접속하셨습니다. 다시 로그인해주세요."));
         String accessToken = jwtUtil.createAccessToken(dbUser.getNarasarangId(), false);
 
-        return new BaseResponse(new Jwt(new Jwt.AccessToken(accessToken), null), HttpStatus.OK);
+        // 만약 Refresh Token의 만료가 7일 이내라면 새로 갱신하고 Redis에 저장한다.
+        boolean needRefresh = false;
+        LocalDate exiresAt = LocalDate.from(decodedRefreshToken.getExpiresAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        if (LocalDate.now().plusDays(7).isAfter(exiresAt)) {
+            needRefresh = true;
+            dbRefreshToken = jwtUtil.createRefreshToken(narasarangId);
+            hashOperations.put(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType(), dbRefreshToken);
+        }
+
+        return new BaseResponse(new Jwt(new Jwt.AccessToken(accessToken), needRefresh ? new Jwt.RefreshToken(dbRefreshToken) : null), HttpStatus.OK);
     }
 
     @Override
