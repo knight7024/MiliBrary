@@ -2,34 +2,82 @@ package kr.milibrary.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
+import kr.milibrary.util.JwtUtil;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Jwt {
+public class Jwt extends BaseDomain {
     @ApiModelProperty(readOnly = true)
-    private String accessToken;
-    private String refreshToken;
+    private AccessToken accessToken;
+    private RefreshToken refreshToken;
 
-    public Jwt() {
+    public static class AccessToken {
+        private String token;
+        private long expiresIn = JwtUtil.JwtType.ACCESS_TOKEN.getExpiresIn();
+
+        public AccessToken(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public long getExpiresIn() {
+            return expiresIn;
+        }
+
+        public void setExpiresIn(long expiresIn) {
+            this.expiresIn = expiresIn;
+        }
     }
 
-    public Jwt(String accessToken, String refreshToken) {
+    public static class RefreshToken {
+        private String token;
+        private long expiresIn = JwtUtil.JwtType.REFRESH_TOKEN.getExpiresIn();
+
+        public RefreshToken(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public long getExpiresIn() {
+            return expiresIn;
+        }
+
+        public void setExpiresIn(long expiresIn) {
+            this.expiresIn = expiresIn;
+        }
+    }
+
+    public Jwt(AccessToken accessToken, RefreshToken refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public String getAccessToken() {
+    public AccessToken getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(AccessToken accessToken) {
         this.accessToken = accessToken;
     }
 
-    public String getRefreshToken() {
+    public RefreshToken getRefreshToken() {
         return refreshToken;
     }
 
-    public void setRefreshToken(String refreshToken) {
+    public void setRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }
 }
