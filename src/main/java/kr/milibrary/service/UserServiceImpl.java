@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
         Optional<String> refreshTokenOptional = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()));
         refreshTokenOptional.ifPresent(token -> hashOperations.delete(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()));
 
-        return new BaseResponse(HttpStatus.OK);
+        return new BaseResponse(HttpStatus.NO_CONTENT);
     }
 
     @Transactional
