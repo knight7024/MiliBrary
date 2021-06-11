@@ -3,7 +3,6 @@ package kr.milibrary.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -15,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
@@ -30,17 +30,23 @@ public class JwtUtil {
     }
 
     public enum JwtType {
-        ACCESS_TOKEN("accessToken"),
-        REFRESH_TOKEN("refreshToken");
+        ACCESS_TOKEN("accessToken", TimeUnit.MINUTES.toSeconds(5)),
+        REFRESH_TOKEN("refreshToken", TimeUnit.DAYS.toSeconds(30));
 
         private final String jwtType;
+        private final long expiresIn;
 
-        JwtType(String jwtType) {
+        JwtType(String jwtType, long expiresIn) {
             this.jwtType = jwtType;
+            this.expiresIn = expiresIn;
         }
 
         public String getJwtType() {
             return jwtType;
+        }
+
+        public long getExpiresIn() {
+            return expiresIn;
         }
     }
 
@@ -48,7 +54,7 @@ public class JwtUtil {
         return JWT.create()
                 .withSubject(JwtType.ACCESS_TOKEN.getJwtType())
                 .withAudience(narasarangId)
-                .withExpiresAt(Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant()))
+                .withExpiresAt(Date.from(LocalDateTime.now().plusSeconds(JwtType.ACCESS_TOKEN.getExpiresIn()).atZone(ZoneId.systemDefault()).toInstant()))
                 .withClaim("isAdmin", isAdmin)
                 .withIssuer(ISSUER)
                 .sign(algorithmHS);
@@ -58,7 +64,7 @@ public class JwtUtil {
         return JWT.create()
                 .withSubject(JwtType.REFRESH_TOKEN.getJwtType())
                 .withAudience(narasarangId)
-                .withExpiresAt(Date.from(LocalDateTime.now().plusDays(30).atZone(ZoneId.systemDefault()).toInstant()))
+                .withExpiresAt(Date.from(LocalDateTime.now().plusSeconds(JwtType.REFRESH_TOKEN.getExpiresIn()).atZone(ZoneId.systemDefault()).toInstant()))
                 .withIssuer(ISSUER)
                 .sign(algorithmHS);
     }

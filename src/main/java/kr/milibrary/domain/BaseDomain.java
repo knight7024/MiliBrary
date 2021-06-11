@@ -1,6 +1,4 @@
 package kr.milibrary.domain;
 
-public class BaseDomain {
-    public BaseDomain() {
-    }
+public abstract class BaseDomain {
 }

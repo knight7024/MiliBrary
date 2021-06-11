@@ -15,6 +15,8 @@ public class Review extends BaseDomain {
     protected Integer bookId;
     @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", readOnly = true)
     protected String narasarangId;
+    @ApiModelProperty(hidden = true)
+    protected String nickname;
     @ApiModelProperty(value = "유저가 매긴 평점(소수점 첫째 자리까지)", example = "2.5", required = true)
     protected Float score;
     @ApiModelProperty(value = "유저가 남긴 리뷰", example = "재밌습니다.", required = true)
@@ -25,9 +27,6 @@ public class Review extends BaseDomain {
     @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime updatedAt;
-
-    @ApiModelProperty(hidden = true)
-    protected String nickname;
 
     public Review() {
     }
