@@ -1,12 +1,16 @@
 package kr.milibrary.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import kr.milibrary.util.JwtUtil;
+
+import java.beans.ConstructorProperties;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Jwt extends BaseDomain {
     @ApiModelProperty(readOnly = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private AccessToken accessToken;
     private RefreshToken refreshToken;
 
@@ -26,6 +30,7 @@ public class Jwt extends BaseDomain {
             this.token = token;
         }
 
+        @ApiModelProperty(readOnly = true)
         public long getExpiresIn() {
             return expiresIn;
         }
@@ -39,6 +44,7 @@ public class Jwt extends BaseDomain {
         private String token;
         private long expiresIn = JwtUtil.JwtType.REFRESH_TOKEN.getExpiresIn();
 
+        @ConstructorProperties({"token"})
         public RefreshToken(String token) {
             this.token = token;
         }
@@ -51,6 +57,8 @@ public class Jwt extends BaseDomain {
             this.token = token;
         }
 
+        @ApiModelProperty(readOnly = true)
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         public long getExpiresIn() {
             return expiresIn;
         }

@@ -132,19 +132,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse refresh(Jwt jwt) {
-        if (!jwtUtil.isValid(jwt.getRefreshToken().getToken(), JwtUtil.JwtType.REFRESH_TOKEN))
+    public BaseResponse refresh(Jwt.RefreshToken refreshToken) {
+        if (!jwtUtil.isValid(refreshToken.getToken(), JwtUtil.JwtType.REFRESH_TOKEN))
             throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 Refresh Token입니다.");
 
-        String narasarangId = jwtUtil.getDecodedJWT(jwt.getRefreshToken().getToken()).getAudience().get(0);
+        String narasarangId = jwtUtil.getDecodedJWT(refreshToken.getToken()).getAudience().get(0);
         User dbUser = getUserByNarasarangId(narasarangId);
 
         String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
         final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
 
         // Redis에 저장된 Refresh Token이 존재하고 입력받은 것과 동일하다면
-        String refreshToken = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()))
-                .filter(t -> t.equals(jwt.getRefreshToken().getToken()))
+        String dbRefreshToken = Optional.ofNullable((String) hashOperations.get(hashParentKey, JwtUtil.JwtType.REFRESH_TOKEN.getJwtType()))
+                .filter(t -> t.equals(refreshToken.getToken()))
                 .orElseThrow(() -> new UnauthorizedException("잘못된 경로로 접속하셨습니다. 다시 로그인해주세요."));
         String accessToken = jwtUtil.createAccessToken(dbUser.getNarasarangId(), false);
 
