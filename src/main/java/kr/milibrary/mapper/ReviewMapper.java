@@ -31,7 +31,7 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id AND id = #{reviewId} AND book_id = #{bookId} " +
+            "ON id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId} " +
             "ORDER BY created_at DESC;")
     Review getReviewById(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
@@ -56,4 +56,20 @@ public interface ReviewMapper {
             "ON t1.narasarang_id = t3.narasarang_id " +
             "ORDER BY t1.created_at DESC;")
     List<Review> getRandomReviews(@Param("size") Integer size);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId};")
+    Review getMyReview(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = t2.narasarang_id;")
+    List<Review> getMyReviews(@Param("narasarangId") String narasarangId);
 }

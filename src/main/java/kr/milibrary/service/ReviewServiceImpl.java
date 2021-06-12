@@ -84,4 +84,18 @@ public class ReviewServiceImpl implements ReviewService {
 
         return new BaseResponse(new ReviewList(reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
+
+    @Override
+    public BaseResponse getMyReview(String narasarangId, int bookId) {
+        User dbUser = getUserByNarasarangId(narasarangId);
+
+        return new BaseResponse(reviewMapper.getMyReview(dbUser.getNarasarangId(), bookId), HttpStatus.OK);
+    }
+
+    @Override
+    public BaseResponse getMyReviews(String narasarangId) {
+        User dbUser = getUserByNarasarangId(narasarangId);
+
+        return new BaseResponse(new ReviewList(reviewMapper.getMyReviews(dbUser.getNarasarangId())), HttpStatus.OK);
+    }
 }

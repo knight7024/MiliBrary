@@ -12,4 +12,6 @@ public interface ReviewService {
     BaseResponse updateReview(String narasarangId, int bookId, int reviewId, Review review);
     BaseResponse deleteReview(String narasarangId, int bookId, int reviewId);
     BaseResponse getRandomReviews(Integer size);
+    BaseResponse getMyReview(String narasarangId, int bookId);
+    BaseResponse getMyReviews(String narasarangId);
 }

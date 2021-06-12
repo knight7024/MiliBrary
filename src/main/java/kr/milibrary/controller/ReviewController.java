@@ -80,4 +80,24 @@ public class ReviewController {
         BaseResponse response = reviewService.getRandomReviews(size);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
+
+    @ApiOperation(value = "특정 책에 대해 내가 작성한 리뷰")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = Review.class)
+    })
+    @GetMapping("/book/{bookId}/review/my")
+    public ResponseEntity<BaseResponse> getMyReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId) {
+        BaseResponse response = reviewService.getMyReview(narasarangId, bookId);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
+    @ApiOperation(value = "내가 작성한 전체 리뷰")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = ReviewList.class)
+    })
+    @GetMapping("/reviews/my")
+    public ResponseEntity<BaseResponse> getMyReviews(@JwtSession @ApiParam(hidden = true) String narasarangId) {
+        BaseResponse response = reviewService.getMyReviews(narasarangId);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
 }
