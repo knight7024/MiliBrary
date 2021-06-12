@@ -10,6 +10,7 @@ import kr.milibrary.exception.NotFoundException;
 import kr.milibrary.mapper.ReviewMapper;
 import kr.milibrary.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,8 +43,10 @@ public class ReviewServiceImpl implements ReviewService {
             
             review.setNarasarangId(dbUser.getNarasarangId());
             reviewMapper.createReview(bookId, review);
-        } catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException duplicateKeyException) {
             throw new ConflictException("리뷰는 중복해서 작성할 수 없습니다.");
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            throw new NotFoundException("해당 책이 존재하지 않습니다.");
         }
 
         return new BaseResponse(getReviewById(bookId, review.getId()), HttpStatus.CREATED);
