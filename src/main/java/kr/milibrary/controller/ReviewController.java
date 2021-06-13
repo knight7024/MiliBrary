@@ -2,7 +2,6 @@ package kr.milibrary.controller;
 
 import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
-import kr.milibrary.annotation.AuthIgnore;
 import kr.milibrary.annotation.JwtSession;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Review;
@@ -36,7 +35,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "특정 책에 대한 전체 리뷰 불러오기")
+    @ApiOperation(value = "특정 책에 대한 전체 리뷰 불러오기", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class),
             @ApiResponse(code = 404, message = "입력한 책 id가 존재하지 않을 때")
@@ -69,7 +68,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "오늘의 랜덤 리뷰")
+    @ApiOperation(value = "오늘의 랜덤 리뷰", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)
     })
