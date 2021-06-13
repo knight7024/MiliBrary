@@ -3,6 +3,7 @@ package kr.milibrary.controller;
 import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
 import kr.milibrary.annotation.JwtSession;
+import kr.milibrary.annotation.ValidBean;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Jwt;
 import kr.milibrary.domain.User;
@@ -11,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import java.util.Map;
 
+// ToDo: Validation 전체 적용, 그룹 별로 다른 Validation 적용하도록 변경
 @RequestMapping("/api/user")
 @Controller
 public class UserController {
@@ -26,6 +30,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ValidBean
     @ApiOperation(value = "로그인")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "로그인에 성공했을 때"),
@@ -35,7 +40,7 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/signin")
-    public ResponseEntity<BaseResponse> signIn(@RequestBody User user) {
+    public ResponseEntity<BaseResponse> signIn(@Valid @RequestBody User user, BindingResult bindingResult) {
         BaseResponse response = userService.signIn(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -58,6 +63,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Access Token 갱신에 성공했을 때"),
             @ApiResponse(code = 401, message = "Refresh Token이 유효하지 않을 때"),
+            @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
     })
     @ResponseBody
     @PostMapping("/refresh")

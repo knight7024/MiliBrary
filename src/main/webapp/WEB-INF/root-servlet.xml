@@ -29,6 +29,7 @@
     <context:component-scan base-package="kr.milibrary.config">
         <context:exclude-filter type="assignable" expression="kr.milibrary.config.SwaggerConfig"/>
     </context:component-scan>
+    <context:component-scan base-package="kr.milibrary.aspect"/>
 
     <mvc:resources location="/WEB-INF/resources/" mapping="/resources/**"/>
     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>

@@ -43,4 +43,10 @@ public class GlobalExceptionHandler {
     ResponseEntity<BadRequestException> BadRequestException(BadRequestException e) {
         return new ResponseEntity<>(e, e.getErrorStatus());
     }
+
+    @ExceptionHandler(value = UnprocessableEntityException.class)
+    public @ResponseBody
+    ResponseEntity<UnprocessableEntityException> UnprocessableEntityException(UnprocessableEntityException e) {
+        return new ResponseEntity<>(e, e.getErrorStatus());
+    }
 }
