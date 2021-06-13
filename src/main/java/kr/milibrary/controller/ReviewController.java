@@ -36,7 +36,6 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @AuthIgnore
     @ApiOperation(value = "특정 책에 대한 전체 리뷰 불러오기")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class),
@@ -70,7 +69,6 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @AuthIgnore
     @ApiOperation(value = "오늘의 랜덤 리뷰")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)
@@ -81,7 +79,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "특정 책에 대해 내가 작성한 리뷰")
+    @ApiOperation(value = "특정 책에 대해 내가 작성한 리뷰", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = Review.class)
     })
@@ -91,7 +89,7 @@ public class ReviewController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "내가 작성한 전체 리뷰")
+    @ApiOperation(value = "내가 작성한 전체 리뷰", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)
     })
