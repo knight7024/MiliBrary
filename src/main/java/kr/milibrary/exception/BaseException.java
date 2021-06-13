@@ -3,27 +3,35 @@ package kr.milibrary.exception;
 import com.fasterxml.jackson.annotation.*;
 import org.springframework.http.HttpStatus;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"stackTrace", "suppressed"})
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+@JsonIgnoreProperties({"stackTrace", "suppressed", "cause", "message", "localizedMessage"})
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 @JsonTypeName(value = "error")
 public class BaseException extends RuntimeException {
-    protected String errorMessage;
+    protected List<String> errorMessages = new ArrayList<>();
     @JsonIgnore
     protected HttpStatus errorStatus;
 
-    BaseException(String errorMessage, HttpStatus errorStatus) {
-        this.errorMessage = errorMessage;
+    BaseException(HttpStatus errorStatus, List<String> errorMessages) {
         this.errorStatus = errorStatus;
+        this.errorMessages = errorMessages;
     }
 
-    @JsonGetter("message")
-    public String getErrorMessage() {
-        return errorMessage;
+    BaseException(HttpStatus errorStatus, String... errorMessage) {
+        this.errorStatus = errorStatus;
+        errorMessages.addAll(Arrays.asList(errorMessage));
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    @JsonGetter("messages")
+    public List<String> getErrorMessages() {
+        return errorMessages;
+    }
+
+    public void setErrorMessages(List<String> errorMessages) {
+        this.errorMessages = errorMessages;
     }
 
     public HttpStatus getErrorStatus() {

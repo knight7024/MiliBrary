@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Auth
 @RequestMapping("/api")
 @RestController
@@ -28,7 +30,7 @@ public class ReviewController {
             @ApiResponse(code = 409, message = "리뷰를 중복해서 작성했을 때")
     })
     @PostMapping("/book/{bookId}/review")
-    public ResponseEntity<BaseResponse> createReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @RequestBody Review review) {
+    public ResponseEntity<BaseResponse> createReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @Valid @RequestBody Review review) {
         BaseResponse response = reviewService.createReview(narasarangId, bookId, review);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }

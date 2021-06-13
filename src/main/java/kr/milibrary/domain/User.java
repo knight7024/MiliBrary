@@ -5,15 +5,21 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Pattern;
+import javax.validation.groups.Default;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends BaseDomain {
     @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", required = true)
+    @NotEmpty(message = "나라사랑 아이디는 필수항목입니다.", groups = {Default.class, UserGroups.sendEmail.class})
+    @Pattern(regexp = "^[0-9]{13}$", message = "올바른 나라사랑 아이디의 형식이 아닙니다.", groups = {Default.class, UserGroups.sendEmail.class})
     protected String narasarangId;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ApiModelProperty(value = "유저의 비밀번호", example = "1q2w3e4r!!", required = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotEmpty(message = "비밀번호는 필수항목입니다")
     protected String password;
     @ApiModelProperty(readOnly = true)
     protected String nickname;
