@@ -16,13 +16,12 @@
         <property name="order" value="1"/>
     </bean>
 
-    <bean id="swaggerConfig" class="kr.milibrary.config.SwaggerConfig"/>
-
+    <bean class="kr.milibrary.config.SwaggerConfig"/>
     <context:component-scan base-package="kr.milibrary.controller"/>
 
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
-            <bean class="kr.milibrary.resolver.JwtSessionHandlerMethodArgumentResolver" />
+            <bean class="kr.milibrary.resolver.JwtSessionHandlerMethodArgumentResolver"/>
         </mvc:argument-resolvers>
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">

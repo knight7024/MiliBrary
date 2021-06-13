@@ -3,8 +3,8 @@ package kr.milibrary.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,9 +17,11 @@ public class Review extends BaseDomain {
     protected String narasarangId;
     @ApiModelProperty(hidden = true)
     protected String nickname;
-    @ApiModelProperty(value = "유저가 매긴 평점(소수점 첫째 자리까지)", example = "2.5", required = true)
+    @ApiModelProperty(value = "유저가 매긴 평점(0부터 5까지 0.5 단위)", example = "2.5", required = true)
+    @NotNull(message = "평점은 필수항목입니다.")
     protected Float score;
     @ApiModelProperty(value = "유저가 남긴 리뷰", example = "재밌습니다.", required = true)
+    @NotNull(message = "리뷰는 필수항목입니다.")
     protected String comment;
     @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")

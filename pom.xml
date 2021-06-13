@@ -171,5 +171,11 @@
             <artifactId>java-jwt</artifactId>
             <version>3.16.0</version>
         </dependency>
+        <!-- Bean Validation -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.2.0.Final</version>
+        </dependency>
     </dependencies>
 </project>

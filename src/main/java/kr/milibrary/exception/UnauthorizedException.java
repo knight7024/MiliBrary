@@ -2,14 +2,14 @@ package kr.milibrary.exception;
 
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 public class UnauthorizedException extends BaseException {
-    public UnauthorizedException(String errorMessage) {
-        super(errorMessage, HttpStatus.UNAUTHORIZED);
+    public UnauthorizedException(List<String> errorMessages) {
+        super(HttpStatus.UNAUTHORIZED, errorMessages);
     }
 
-//    public String toString() {
-//        return "UnauthorizeException{" +
-//                "errorMessage=" + "" +
-//                '}';
-//    }
+    public UnauthorizedException(String... errorMessage) {
+        super(HttpStatus.UNAUTHORIZED, errorMessage);
+    }
 }

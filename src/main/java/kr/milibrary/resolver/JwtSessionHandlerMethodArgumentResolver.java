@@ -15,18 +15,11 @@ public class JwtSessionHandlerMethodArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        JwtSession jwtSession = parameter.getParameterAnnotation(JwtSession.class);
-        if (jwtSession == null)
-            return false;
-
-        return parameter.getParameterType().equals(String.class);
+        return parameter.hasParameterAnnotation(JwtSession.class) & parameter.getParameterType().equals(String.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        if (!supportsParameter(parameter))
-            return WebArgumentResolver.UNRESOLVED;
-
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         HttpSession session = request.getSession();
         if (session == null)
