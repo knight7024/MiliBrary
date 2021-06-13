@@ -3,23 +3,22 @@ package kr.milibrary.controller;
 import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
 import kr.milibrary.annotation.JwtSession;
-import kr.milibrary.annotation.ValidBean;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Jwt;
 import kr.milibrary.domain.User;
+import kr.milibrary.domain.UserGroups;
 import kr.milibrary.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.Map;
 
-// ToDo: Validation 전체 적용, 그룹 별로 다른 Validation 적용하도록 변경
 @RequestMapping("/api/user")
 @Controller
 public class UserController {
@@ -30,7 +29,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ValidBean
     @ApiOperation(value = "로그인")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "로그인에 성공했을 때"),
@@ -40,7 +38,7 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/signin")
-    public ResponseEntity<BaseResponse> signIn(@Valid @RequestBody User user, BindingResult bindingResult) {
+    public ResponseEntity<BaseResponse> signIn(@Valid @RequestBody User user) {
         BaseResponse response = userService.signIn(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -59,10 +57,10 @@ public class UserController {
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
-    @ApiOperation(value = "Access Token 갱신")
+    @ApiOperation(value = "AccessToken 갱신")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Access Token 갱신에 성공했을 때"),
-            @ApiResponse(code = 401, message = "Refresh Token이 유효하지 않을 때"),
+            @ApiResponse(code = 200, message = "AccessToken 갱신에 성공했을 때"),
+            @ApiResponse(code = 401, message = "RefreshToken이 유효하지 않을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
     })
     @ResponseBody
@@ -79,7 +77,7 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse> signUp(@RequestBody User user) {
+    public ResponseEntity<BaseResponse> signUp(@Valid @RequestBody User user) {
         BaseResponse response = userService.signUp(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -93,7 +91,7 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/signup/resend-email")
-    public ResponseEntity<BaseResponse> signUpResend(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @RequestBody User user) {
+    public ResponseEntity<BaseResponse> signUpResend(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @Validated(value = UserGroups.sendEmail.class) @RequestBody User user) {
         BaseResponse response = userService.signUpResend(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -112,7 +110,7 @@ public class UserController {
     })
     @ResponseBody
     @PostMapping("/forgot-password")
-    public ResponseEntity<BaseResponse> forgotPassword(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @RequestBody User user) {
+    public ResponseEntity<BaseResponse> forgotPassword(@ApiParam(value = "password 속성은 필요하지 않음", required = true) @Validated(value = UserGroups.sendEmail.class) @RequestBody User user) {
         BaseResponse response = userService.forgotPassword(user);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }

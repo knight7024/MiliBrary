@@ -48,7 +48,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                 return true;
 
             if (!jwtOptional.isPresent())
-                throw new UnauthorizedException("올바르지 않은 Access Token입니다.");
+                throw new UnauthorizedException("올바르지 않은 AccessToken입니다.");
 
             DecodedJWT decodedJWT = validateAuth(classAuth.role(), jwtOptional.get());
             setSessionAttribute(request.getSession(), "narasarangId", decodedJWT.getAudience().get(0));
@@ -62,7 +62,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         if (methodAuth != null) {
             if (!jwtOptional.isPresent())
-                throw new UnauthorizedException("올바르지 않은 Access Token입니다.");
+                throw new UnauthorizedException("올바르지 않은 AccessToken입니다.");
 
             DecodedJWT decodedJWT = validateAuth(methodAuth.role(), jwtOptional.get());
             setSessionAttribute(request.getSession(), "narasarangId", decodedJWT.getAudience().get(0));
@@ -81,11 +81,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                 if (!jwtUtil.forAdmin(jwt))
                     throw new ForbiddenException("해당 서비스는 관리자만 이용 가능합니다.");
             } catch (JWTDecodeException jwtDecodeException) {
-                throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 Access Token입니다.");
+                throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 AccessToken입니다.");
             }
         } else {
             if (!jwtUtil.isValid(jwt, JwtUtil.JwtType.ACCESS_TOKEN))
-                throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 Access Token입니다.");
+                throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 AccessToken입니다.");
         }
 
         return jwtUtil.getDecodedJWT(jwt);
