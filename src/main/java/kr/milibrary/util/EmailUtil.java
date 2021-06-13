@@ -38,6 +38,7 @@ public class EmailUtil {
             message.setText(htmlTemplate, true);
         };
 
-        javaMailSender.send(preparator);
+        Thread mailThread = new Thread(() -> javaMailSender.send(preparator));
+        mailThread.start();
     }
 }
