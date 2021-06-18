@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("reviewMapper")
 public interface ReviewMapper {
     @Insert("INSERT INTO milibrary.reviews (book_id, narasarang_id, score, comment) " +
             "VALUES (#{bookId}, #{review.narasarangId}, #{review.score}, #{review.comment});")
@@ -41,7 +41,6 @@ public interface ReviewMapper {
     @Delete("DELETE FROM milibrary.reviews WHERE id = #{reviewId} AND book_id = #{bookId}")
     int deleteReview(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
-    // Covering Index
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t3.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
             "FROM (" +
             "milibrary.reviews AS t1 " +

@@ -1,9 +1,6 @@
 package kr.milibrary.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Book;
@@ -32,6 +29,16 @@ public class BookController {
     @GetMapping("/book/{bookId}")
     public ResponseEntity<BaseResponse> getBook(@PathVariable int bookId) {
         BaseResponse response = bookService.getBook(bookId);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
+    @ApiOperation(value = "랜덤 책 불러오기", authorizations = {@Authorization(value = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = Book.class)
+    })
+    @GetMapping("/book/random")
+    public ResponseEntity<BaseResponse> getRandomBooks(@ApiParam(value = "1~50", defaultValue = "5", example = "5") @RequestParam Integer size) {
+        BaseResponse response = bookService.getRandomBooks(size);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 

@@ -7,9 +7,11 @@ import kr.milibrary.exception.NotFoundException;
 import kr.milibrary.mapper.BookMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service("bookService")
 public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
@@ -25,6 +27,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public BaseResponse getBook(int bookId) {
         return new BaseResponse(getBookById(bookId), HttpStatus.OK);
+    }
+
+    @Override
+    public BaseResponse getRandomBooks(Integer size) {
+        size = Optional.ofNullable(size).orElse(5);
+
+        return new BaseResponse(new BookList(bookMapper.getRandomBooks(size > 50 ? 50 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
 
     @Override

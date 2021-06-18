@@ -85,7 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse getRandomReviews(Integer size) {
         size = Optional.ofNullable(size).orElse(5);
 
-        return new BaseResponse(new ReviewList(reviewMapper.getRandomReviews(size > 100 ? 100 : size < 1 ? 1 : size)), HttpStatus.OK);
+        return new BaseResponse(new ReviewList(reviewMapper.getRandomReviews(size > 50 ? 50 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
 
     @Override
