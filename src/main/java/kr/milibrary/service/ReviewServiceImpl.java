@@ -40,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse createReview(String narasarangId, int bookId, Review review) throws ConflictException {
         try {
             User dbUser = getUserByNarasarangId(narasarangId);
-            
+
             review.setNarasarangId(dbUser.getNarasarangId());
             reviewMapper.createReview(bookId, review);
         } catch (DuplicateKeyException duplicateKeyException) {
@@ -75,8 +75,9 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse deleteReview(String narasarangId, int bookId, int reviewId) throws NotFoundException {
         User dbUser = getUserByNarasarangId(narasarangId);
 
-        if (reviewMapper.deleteReview(bookId, reviewId) == 0)
+        if (reviewMapper.deleteReview(bookId, reviewId) == 0) {
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
+        }
 
         return new BaseResponse(HttpStatus.NO_CONTENT);
     }

@@ -25,6 +25,21 @@ public class Book extends BaseDomain {
     protected String publisher;
     protected String thumbnail;
 
+    public enum Sorting {
+        YEAR("year"),
+        QTR("quarter");
+
+        private final String columnName;
+
+        Sorting(String columnName) {
+            this.columnName = columnName;
+        }
+
+        public String getColumnName() {
+            return columnName;
+        }
+    }
+
     public Book() {
     }
 

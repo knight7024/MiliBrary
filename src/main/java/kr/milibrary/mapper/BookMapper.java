@@ -20,6 +20,9 @@ public interface BookMapper {
             "ON t1.id = t2.id LIMIT #{size};")
     List<Book> getRandomBooks(@Param("size") Integer size);
 
-    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books LIMIT #{size};")
-    List<Book> getBooks(@Param("size") Integer size);
+    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${sortBy} ${order};")
+    List<Book> getBooksSortBySingle(@Param("sortBy") String sortBy, @Param("order") String order);
+
+    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${sort};")
+    List<Book> getBooksSortByMultiple(@Param("sort") String sort);
 }

@@ -29,7 +29,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     // 컨트롤러에서 호출한 메소드를 실행하기 전에 실행된다.
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (!(handler instanceof HandlerMethod)) return true;
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
 
         Optional<String> jwtOptional = Optional.ofNullable(request.getHeader("Authorization"))
                 .filter(t -> t.startsWith("Bearer "))
@@ -44,11 +46,13 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         if (classAuth != null) {
             // 메소드에 AuthIgnore이 존재하면 검사하지 않는다.
             AuthIgnore methodAuthIgnore = handlerMethod.getMethodAnnotation(AuthIgnore.class);
-            if (methodAuthIgnore != null)
+            if (methodAuthIgnore != null) {
                 return true;
+            }
 
-            if (!jwtOptional.isPresent())
+            if (!jwtOptional.isPresent()) {
                 throw new UnauthorizedException("올바르지 않은 AccessToken입니다.");
+            }
 
             DecodedJWT decodedJWT = validateAuth(classAuth.role(), jwtOptional.get());
             setSessionAttribute(request.getSession(), "narasarangId", decodedJWT.getAudience().get(0));
@@ -61,8 +65,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         Auth methodAuth = method.getAnnotation(Auth.class);
 
         if (methodAuth != null) {
-            if (!jwtOptional.isPresent())
+            if (!jwtOptional.isPresent()) {
                 throw new UnauthorizedException("올바르지 않은 AccessToken입니다.");
+            }
 
             DecodedJWT decodedJWT = validateAuth(methodAuth.role(), jwtOptional.get());
             setSessionAttribute(request.getSession(), "narasarangId", decodedJWT.getAudience().get(0));
@@ -78,14 +83,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         // 필요 권한이 ADMIN이라면
         if (role == Auth.Role.ADMIN) {
             try {
-                if (!jwtUtil.forAdmin(jwt))
+                if (!jwtUtil.forAdmin(jwt)) {
                     throw new ForbiddenException("해당 서비스는 관리자만 이용 가능합니다.");
+                }
             } catch (JWTDecodeException jwtDecodeException) {
                 throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 AccessToken입니다.");
             }
         } else {
-            if (!jwtUtil.isValid(jwt, JwtUtil.JwtType.ACCESS_TOKEN))
+            if (!jwtUtil.isValid(jwt, JwtUtil.JwtType.ACCESS_TOKEN)) {
                 throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 AccessToken입니다.");
+            }
         }
 
         return jwtUtil.getDecodedJWT(jwt);

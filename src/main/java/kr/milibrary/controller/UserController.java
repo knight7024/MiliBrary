@@ -119,8 +119,9 @@ public class UserController {
     @GetMapping("/reset-password")
     public String resetPasswordAuth(@RequestParam(value = "token") String token, Model model) {
         Map<String, Object> result = userService.resetPasswordAuth(token);
-        if (!((boolean) result.get("success")) || (boolean) result.get("isExpired"))
+        if (!((boolean) result.get("success")) || (boolean) result.get("isExpired")) {
             return "error-page";
+        }
 
         model.addAttribute("contextURL", result.get("contextURL"));
         model.addAttribute("token", result.get("token"));

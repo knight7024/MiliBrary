@@ -51,15 +51,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUserByNarasarangId(String narasarangId) throws BadRequestException, NotFoundException {
-        if (narasarangId == null)
+        if (narasarangId == null) {
             throw new BadRequestException("나라사랑 아이디는 빈 값일 수 없습니다.");
+        }
 
         return Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId)).orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
     }
 
     private Token getToken(String token) throws BadRequestException {
-        if (token == null)
+        if (token == null) {
             throw new BadRequestException("인증 토큰은 빈 값일 수 없습니다.");
+        }
 
         return Optional.ofNullable(tokenMapper.getToken(token)).orElseThrow(() -> new BadRequestException("올바르지 않은 인증 토큰입니다."));
     }
@@ -68,8 +70,9 @@ public class UserServiceImpl implements UserService {
     public BaseResponse signIn(User user) throws UnauthorizedException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
         if (BCrypt.checkpw(user.getPassword(), dbUser.getPassword())) {
-            if (!dbUser.getRegistered())
+            if (!dbUser.getRegistered()) {
                 throw new UnauthorizedException("본인인증이 아직 완료되지 않은 아이디입니다.");
+            }
 
             String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
             final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
@@ -136,8 +139,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResponse refresh(Jwt.RefreshToken refreshToken) {
-        if (!jwtUtil.isValid(refreshToken.getToken(), JwtUtil.JwtType.REFRESH_TOKEN))
+        if (!jwtUtil.isValid(refreshToken.getToken(), JwtUtil.JwtType.REFRESH_TOKEN)) {
             throw new UnauthorizedException("만료되었거나 형식에 맞지 않는 Refresh Token입니다.");
+        }
 
         DecodedJWT decodedRefreshToken = jwtUtil.getDecodedJWT(refreshToken.getToken());
 
@@ -168,8 +172,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResponse signUpResend(User user) throws ConflictException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
-        if (dbUser.getRegistered())
+        if (dbUser.getRegistered()) {
             throw new ConflictException("이미 가입되어 있는 나라사랑 아이디입니다. 비밀번호를 잊으셨다면 비밀번호 초기화를 해주세요.");
+        }
 
         LocalDateTime now = LocalDateTime.now();
         Token registerToken = new Token(user.getNarasarangId(), SHA256Util.getEncrypt(user.getNarasarangId(), now.toString()), Token.TokenType.RESEND_REGISTRATION);
@@ -193,11 +198,13 @@ public class UserServiceImpl implements UserService {
             Token dbToken = getToken(token);
 
             User dbUser = userMapper.getUserByToken(token);
-            if (dbUser == null)
+            if (dbUser == null) {
                 return false;
+            }
 
-            if (dbUser.getRegistered())
+            if (dbUser.getRegistered()) {
                 return false;
+            }
 
             // 현재 시간과 토큰 발송 시간 비교해서 만료되었는지 여부 확인
             isExpired = dbToken.isExpired(1);
@@ -219,8 +226,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResponse forgotPassword(User user) throws ConflictException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
-        if (!dbUser.getRegistered())
+        if (!dbUser.getRegistered()) {
             throw new ConflictException("회원가입이 완료되지 않은 아이디입니다. 계속 인증 메일이 오지 않는다면 인증 메일 재전송을 해주세요.");
+        }
 
         LocalDateTime now = LocalDateTime.now();
         Token resetToken = new Token(user.getNarasarangId(), SHA256Util.getEncrypt(user.getNarasarangId(), now.toString()), Token.TokenType.FORGOT_PASSWORD);
@@ -247,8 +255,9 @@ public class UserServiceImpl implements UserService {
             dbToken = getToken(token);
 
             User dbUser = userMapper.getUserByToken(token);
-            if (dbUser == null)
+            if (dbUser == null) {
                 return variables;
+            }
 
             variables.put("token", dbToken.getToken());
         } catch (DataAccessException e) {
@@ -264,15 +273,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public boolean resetPassword(Map<String, Object> variables) {
-        if (variables.isEmpty())
+        if (variables.isEmpty()) {
             return false;
+        }
 
         try {
             Token dbToken = getToken((String) variables.get("token"));
 
             User dbUser = userMapper.getUserByToken(dbToken.getToken());
-            if (dbUser == null)
+            if (dbUser == null) {
                 return false;
+            }
 
             dbUser.setPassword(BCrypt.hashpw((String) variables.get("password"), BCrypt.gensalt()));
             userMapper.updateUser(dbUser);
