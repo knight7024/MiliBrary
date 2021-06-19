@@ -32,7 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
         return Optional.ofNullable(reviewMapper.getReviewById(bookId, reviewId)).orElseThrow(() -> new NotFoundException("해당 리뷰가 존재하지 않습니다."));
     }
 
-    private User getUserByNarasarangId(String narasarangId) throws BadRequestException, NotFoundException {
+    private User getUserByNarasarangId(String narasarangId) throws NotFoundException {
         return Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId)).orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
     }
 
@@ -86,7 +86,7 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse getRandomReviews(Integer size) {
         size = Optional.ofNullable(size).orElse(5);
 
-        return new BaseResponse(new ReviewList(reviewMapper.getRandomReviews(size > 50 ? 50 : size < 1 ? 1 : size)), HttpStatus.OK);
+        return new BaseResponse(new ReviewList(reviewMapper.getRandomReviews(size > 10 ? 10 : size < 1 ? 1 : size)), HttpStatus.OK);
     }
 
     @Override

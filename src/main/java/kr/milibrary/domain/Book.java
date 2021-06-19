@@ -25,13 +25,28 @@ public class Book extends BaseDomain {
     protected String publisher;
     protected String thumbnail;
 
-    public enum Sorting {
+    public enum Sort {
         YEAR("year"),
         QTR("quarter");
 
         private final String columnName;
 
-        Sorting(String columnName) {
+        Sort(String columnName) {
+            this.columnName = columnName;
+        }
+
+        public String getColumnName() {
+            return columnName;
+        }
+    }
+
+    public enum Search {
+        AUTHOR("authors"),
+        TITLE("title");
+
+        private final String columnName;
+
+        Search(String columnName) {
             this.columnName = columnName;
         }
 

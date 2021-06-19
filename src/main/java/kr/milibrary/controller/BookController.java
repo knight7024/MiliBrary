@@ -5,6 +5,7 @@ import kr.milibrary.annotation.Auth;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Book;
 import kr.milibrary.domain.BookList;
+import kr.milibrary.domain.Criteria;
 import kr.milibrary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "", response = Book.class)
     })
     @GetMapping("/book/random")
-    public ResponseEntity<BaseResponse> getRandomBooks(@ApiParam(value = "1~50", defaultValue = "5", example = "5") @RequestParam Integer size) {
+    public ResponseEntity<BaseResponse> getRandomBooks(@ApiParam(value = "1~10", defaultValue = "5", example = "5") @RequestParam Integer size) {
         BaseResponse response = bookService.getRandomBooks(size);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -48,8 +49,8 @@ public class BookController {
             @ApiResponse(code = 400, message = "잘못된 쿼리를 입력했을 때")
     })
     @GetMapping(value = "/books", params = "sortBy")
-    public ResponseEntity<BaseResponse> getBooksSortBySingle(@ApiParam(value = "year(연도) 또는 qtr(분기)") @RequestParam String sortBy, @ApiParam(value = "asc 또는 desc", defaultValue = "asc") @RequestParam String order) {
-        BaseResponse response = bookService.getBooksSortBySingle(sortBy, order);
+    public ResponseEntity<BaseResponse> getBooksSortBySingle(@ModelAttribute Criteria.SortBySingleCriteria criteria) {
+        BaseResponse response = bookService.getBooksSortBySingle(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -58,8 +59,18 @@ public class BookController {
             @ApiResponse(code = 200, message = "", response = BookList.class)
     })
     @GetMapping(value = "/books", params = "sort")
-    public ResponseEntity<BaseResponse> getBooksSortByMultiple(@ApiParam(value = "1개 이상의 기준:순서(ex. year:asc,qtr:desc)") @RequestParam String sort) {
-        BaseResponse response = bookService.getBooksSortByMultiple(sort);
+    public ResponseEntity<BaseResponse> getBooksSortByMultiple(@ModelAttribute Criteria.SortByMultipleCriteria criteria) {
+        BaseResponse response = bookService.getBooksSortByMultiple(criteria);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
+    @ApiOperation(value = "책 검색하기", authorizations = {@Authorization(value = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = BookList.class)
+    })
+    @GetMapping(value = "/search/book")
+    public ResponseEntity<BaseResponse> searchBooks(@ModelAttribute Criteria.SearchCriteria criteria) {
+        BaseResponse response = bookService.searchBooks(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 }
