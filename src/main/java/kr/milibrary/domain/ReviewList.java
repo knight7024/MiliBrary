@@ -1,5 +1,6 @@
 package kr.milibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ReviewList extends BaseDomain {
         this.averageScore = averageScore;
     }
 
+    @JsonGetter("reviews")
     public List<Review> getReviewList() {
         return reviewList;
     }

@@ -73,7 +73,7 @@ public class ReviewController {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)
     })
     @GetMapping("/review/random")
-    public ResponseEntity<BaseResponse> getRandomReviews(@ApiParam(value = "1~100", defaultValue = "5", example = "5") @RequestParam Integer size) {
+    public ResponseEntity<BaseResponse> getRandomReviews(@ApiParam(value = "1~10", defaultValue = "5", example = "5") @RequestParam Integer size) {
         BaseResponse response = reviewService.getRandomReviews(size);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
