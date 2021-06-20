@@ -1,8 +1,10 @@
 package kr.milibrary.controller;
 
+import kr.milibrary.exception.BadRequestException;
 import kr.milibrary.exception.BaseException;
 import kr.milibrary.exception.UnprocessableEntityException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,5 +28,11 @@ public class GlobalExceptionHandler {
 
         UnprocessableEntityException unprocessableEntityException = new UnprocessableEntityException(errorMessages);
         return new ResponseEntity<>(unprocessableEntityException, unprocessableEntityException.getErrorStatus());
+    }
+
+    @ExceptionHandler(value = BindException.class)
+    public ResponseEntity<BadRequestException> BindException(BindException bindException) {
+        BadRequestException badRequestException = new BadRequestException("잘못된 요청입니다.");
+        return new ResponseEntity<>(badRequestException, badRequestException.getErrorStatus());
     }
 }

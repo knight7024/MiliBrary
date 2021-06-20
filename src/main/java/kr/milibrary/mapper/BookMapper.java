@@ -27,6 +27,6 @@ public interface BookMapper {
     @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sort};")
     List<Book> getBooksSortByMultiple(@Param("criteria") Criteria.SortByMultipleCriteria criteria);
 
-    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books WHERE ${criteria.target} LIKE CONCAT('%', #{criteria.query}, '%');")
+    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books WHERE ${criteria.target} LIKE CONCAT('%', IF(#{criteria.query} = '', null, #{criteria.query}), '%');")
     List<Book> searchBooks(@Param("criteria") Criteria.SearchCriteria criteria);
 }
