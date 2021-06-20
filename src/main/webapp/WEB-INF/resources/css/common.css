@@ -1,0 +1,36 @@
+@import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css');
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'NanumSquare', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.bg-image {
+    background-image: url('../img/milibrary_bg.jpg');
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bg-text {
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 10px gray;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 600px;
+    padding: 80px 40px;
+    text-align: center;
+}
