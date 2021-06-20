@@ -14,3 +14,7 @@
 * JWT (AccessToken + RefreshToken)
 * Redis
 ```
+
+
+## 📅 Kanban Board (simplified)
+[Trello](https://trello.com/b/koCnX3ly/bctp-milibrary)
