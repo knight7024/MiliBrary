@@ -94,6 +94,8 @@ public class Criteria {
             try {
                 // ',' 기준으로 자른 뒤
                 String[] sortPair = sort.trim().split(",");
+                if (sortPair.length == 0)
+                    throw new IllegalArgumentException();
 
                 // :로 자르고
                 List<String> sortingKeys = new ArrayList<>();
