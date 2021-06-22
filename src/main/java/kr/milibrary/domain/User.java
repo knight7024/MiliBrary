@@ -1,9 +1,6 @@
 package kr.milibrary.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -27,8 +24,7 @@ public class User extends BaseDomain {
     @ApiModelProperty(readOnly = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     protected LocalDateTime registeredAt;
-    @ApiModelProperty(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @JsonIgnore
     protected LocalDateTime createdAt;
 
     @ApiModelProperty(hidden = true)
@@ -61,7 +57,7 @@ public class User extends BaseDomain {
         this.nickname = nickname;
     }
 
-    @ApiModelProperty(readOnly = true)
+    @JsonIgnore
     public Boolean getRegistered() {
         return isRegistered;
     }

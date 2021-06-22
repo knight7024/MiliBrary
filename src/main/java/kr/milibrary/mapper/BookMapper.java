@@ -16,17 +16,20 @@ public interface BookMapper {
     @Select("SELECT t1.id, t1.year, t1.quarter, t1.categoryName, t1.title, t1.description, t1.itemPage, t1.isbn, t1.pub_date, t1.authors, t1.thumbnail " +
             "FROM milibrary.books AS t1 " +
             "JOIN (" +
-            "SELECT id FROM milibrary.books ORDER BY RAND()" +
+            "SELECT id FROM milibrary.books ORDER BY RAND() LIMIT #{size}" +
             ") AS t2 " +
-            "ON t1.id = t2.id LIMIT #{size};")
+            "ON t1.id = t2.id;")
     List<Book> getRandomBooks(@Param("size") Integer size);
 
-    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sortBy} ${criteria.order};")
+    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
     List<Book> getBooksSortBySingle(@Param("criteria") Criteria.SortBySingleCriteria criteria);
 
-    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sort};")
+    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sort} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
     List<Book> getBooksSortByMultiple(@Param("criteria") Criteria.SortByMultipleCriteria criteria);
 
-    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books WHERE ${criteria.target} LIKE CONCAT('%', IF(#{criteria.query} = '', null, #{criteria.query}), '%');")
+    @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books WHERE ${criteria.target} LIKE CONCAT('%', IF(#{criteria.query} = '', null, #{criteria.query}), '%') LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
     List<Book> searchBooks(@Param("criteria") Criteria.SearchCriteria criteria);
+
+    @Select("SELECT COUNT(*) FROM milibrary.books;")
+    int getTotalCount();
 }

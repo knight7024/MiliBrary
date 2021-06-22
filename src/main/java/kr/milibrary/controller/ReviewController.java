@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
 import kr.milibrary.annotation.JwtSession;
 import kr.milibrary.domain.BaseResponse;
+import kr.milibrary.domain.Criteria;
 import kr.milibrary.domain.Review;
 import kr.milibrary.domain.ReviewList;
 import kr.milibrary.service.ReviewService;
@@ -41,8 +42,8 @@ public class ReviewController {
             @ApiResponse(code = 404, message = "입력한 책 id가 존재하지 않을 때")
     })
     @GetMapping("/book/{bookId}/reviews")
-    public ResponseEntity<BaseResponse> getReviews(@PathVariable int bookId) {
-        BaseResponse response = reviewService.getReviews(bookId);
+    public ResponseEntity<BaseResponse> getReviews(@PathVariable int bookId, Criteria criteria) {
+        BaseResponse response = reviewService.getReviews(bookId, criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
@@ -93,8 +94,8 @@ public class ReviewController {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)
     })
     @GetMapping("/reviews/my")
-    public ResponseEntity<BaseResponse> getMyReviews(@JwtSession @ApiParam(hidden = true) String narasarangId) {
-        BaseResponse response = reviewService.getMyReviews(narasarangId);
+    public ResponseEntity<BaseResponse> getMyReviews(@JwtSession @ApiParam(hidden = true) String narasarangId, Criteria criteria) {
+        BaseResponse response = reviewService.getMyReviews(narasarangId, criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 }

@@ -1,6 +1,7 @@
 package kr.milibrary.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,8 +23,11 @@ public class Book extends BaseDomain {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     protected LocalDate pubDate;
     protected String authors;
+    @JsonIgnore
     protected String publisher;
     protected String thumbnail;
+
+    protected Float averageScore = null;
 
     public enum SortType {
         YEAR("year"),
@@ -104,5 +108,13 @@ public class Book extends BaseDomain {
 
     public String getThumbnail() {
         return thumbnail;
+    }
+
+    public Float getAverageScore() {
+        return averageScore;
+    }
+
+    public void setAverageScore(Float averageScore) {
+        this.averageScore = averageScore;
     }
 }

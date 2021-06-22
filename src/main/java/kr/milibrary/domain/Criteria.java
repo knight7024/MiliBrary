@@ -9,9 +9,9 @@ import java.util.*;
 
 @ApiIgnore
 public class Criteria {
-    @ApiParam(defaultValue = "1")
+    @ApiParam(value = "1 이상", defaultValue = "1")
     protected int page = 1;
-    @ApiParam(defaultValue = "10")
+    @ApiParam(value = "10 이상 50 이하", defaultValue = "10")
     protected int limit = 10;
 
     public static class SearchCriteria extends Criteria {
@@ -41,7 +41,7 @@ public class Criteria {
                             .filter(keyword -> !keyword.isEmpty() & Arrays.stream(Book.SearchType.values())
                                     .anyMatch(searchType -> keyword.equalsIgnoreCase(searchType.name())))
                             .orElse(Book.SearchType.TITLE.name())
-                    .toUpperCase()
+                            .toUpperCase()
             ).getTypeName();
         }
     }
@@ -149,7 +149,7 @@ public class Criteria {
     }
 
     public void setLimit(int limit) {
-        this.limit = Math.min(limit, 50);
+        this.limit = Math.min(Math.max(limit, 10), 50);
     }
 
     public int getPage() {
@@ -161,7 +161,7 @@ public class Criteria {
     }
 
     @ApiModelProperty(hidden = true)
-    public int getCursor() {
+    public int getOffset() {
         return (page - 1) * limit;
     }
 }

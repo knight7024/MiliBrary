@@ -1,9 +1,6 @@
 package kr.milibrary.service;
 
-import kr.milibrary.domain.BaseResponse;
-import kr.milibrary.domain.Review;
-import kr.milibrary.domain.ReviewList;
-import kr.milibrary.domain.User;
+import kr.milibrary.domain.*;
 import kr.milibrary.exception.BadRequestException;
 import kr.milibrary.exception.ConflictException;
 import kr.milibrary.exception.NotFoundException;
@@ -53,9 +50,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getReviews(int bookId) throws NotFoundException {
-        Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(reviewMapper.getReviews(bookId), reviewMapper.getAverageScore(bookId)));
-        reviewListOptional.map(ReviewList::getAverageScore).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
+    public BaseResponse getReviews(int bookId, Criteria criteria) throws NotFoundException {
+        Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(calculateTotalPage(criteria.getLimit()), reviewMapper.getReviews(bookId, criteria)));
 
         return new BaseResponse(reviewListOptional.get(), HttpStatus.OK);
     }
@@ -97,9 +93,17 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getMyReviews(String narasarangId) {
+    public BaseResponse getMyReviews(String narasarangId, Criteria criteria) {
         User dbUser = getUserByNarasarangId(narasarangId);
 
-        return new BaseResponse(new ReviewList(reviewMapper.getMyReviews(dbUser.getNarasarangId())), HttpStatus.OK);
+        return new BaseResponse(new ReviewList(calculateTotalPage(criteria.getLimit(), narasarangId), reviewMapper.getMyReviews(dbUser.getNarasarangId(), criteria)), HttpStatus.OK);
+    }
+
+    private int calculateTotalPage(int limit) {
+        return (int) Math.ceil((double) reviewMapper.getTotalCount() / limit);
+    }
+
+    private int calculateTotalPage(int limit, String narasarangId) {
+        return (int) Math.ceil((double) reviewMapper.getTotalCountByNarasarangId(narasarangId) / limit);
     }
 }

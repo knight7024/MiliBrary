@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewList extends BaseDomain {
+    protected Integer totalPage = null;
     protected List<Review> reviewList;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected Float averageScore = null;
 
     public ReviewList() {
     }
@@ -17,9 +17,17 @@ public class ReviewList extends BaseDomain {
         this.reviewList = reviewList;
     }
 
-    public ReviewList(List<Review> reviewList, Float averageScore) {
+    public ReviewList(Integer totalPage, List<Review> reviewList) {
+        this.totalPage = totalPage;
         this.reviewList = reviewList;
-        this.averageScore = averageScore;
+    }
+
+    public Integer getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(Integer totalPage) {
+        this.totalPage = totalPage;
     }
 
     @JsonGetter("reviews")
@@ -29,13 +37,5 @@ public class ReviewList extends BaseDomain {
 
     public void setReviewList(List<Review> reviewList) {
         this.reviewList = reviewList;
-    }
-
-    public Float getAverageScore() {
-        return averageScore;
-    }
-
-    public void setAverageScore(Float averageScore) {
-        this.averageScore = averageScore;
     }
 }

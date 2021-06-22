@@ -1,5 +1,6 @@
 package kr.milibrary.mapper;
 
+import kr.milibrary.domain.Criteria;
 import kr.milibrary.domain.Review;
 import org.apache.ibatis.annotations.*;
 import org.springframework.dao.DataAccessException;
@@ -20,8 +21,8 @@ public interface ReviewMapper {
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
             "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "ORDER BY created_at DESC;")
-    List<Review> getReviews(@Param("bookId") int bookId);
+            "ORDER BY created_at DESC LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
+    List<Review> getReviews(@Param("bookId") int bookId, @Param("criteria") Criteria criteria);
 
     @Select("SELECT ROUND(AVG(score), 1) AS averageScore FROM milibrary.reviews WHERE book_id = #{bookId} GROUP BY book_id;")
     Float getAverageScore(@Param("bookId") int bookId);
@@ -69,6 +70,12 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id;")
-    List<Review> getMyReviews(@Param("narasarangId") String narasarangId);
+            "ON t1.narasarang_id = t2.narasarang_id LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
+    List<Review> getMyReviews(@Param("narasarangId") String narasarangId, @Param("criteria") Criteria criteria);
+
+    @Select("SELECT COUNT(*) FROM milibrary.reviews;")
+    int getTotalCount();
+
+    @Select("SELECT COUNT(*) FROM milibrary.reviews WHERE narasarang_id = #{narasarangId};")
+    int getTotalCountByNarasarangId(@Param("narasarangId") String narasarangId);
 }
