@@ -19,7 +19,7 @@ public class Review extends BaseDomain {
     protected String nickname;
     @ApiModelProperty(value = "유저가 매긴 평점(0부터 5까지 0.5 단위)", example = "2.5", required = true)
     @NotNull(message = "평점은 필수항목입니다.")
-    protected Float score;
+    protected Double score;
     @ApiModelProperty(value = "유저가 남긴 리뷰", example = "재밌습니다.", required = true)
     @NotNull(message = "리뷰는 필수항목입니다.")
     protected String comment;
@@ -57,12 +57,12 @@ public class Review extends BaseDomain {
         this.narasarangId = narasarangId;
     }
 
-    public Float getScore() {
-        return score;
+    public Double getScore() {
+        return Math.ceil(score * 2) / 2;
     }
 
-    public void setScore(Float score) {
-        this.score = score;
+    public void setScore(Double score) {
+        this.score = Math.max(Math.min(score, 5), 0);
     }
 
     public String getComment() {
