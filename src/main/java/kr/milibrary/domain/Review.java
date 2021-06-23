@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Review extends BaseDomain {
@@ -29,6 +31,50 @@ public class Review extends BaseDomain {
     protected LocalDateTime createdAt;
     @JsonIgnore
     protected LocalDateTime updatedAt;
+
+    public enum SortType {
+        DATE("created_at"),
+        SCORE("score")
+        ;
+
+        private final String typeName;
+
+        SortType(String typeName) {
+            this.typeName = typeName;
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
+    }
+
+    public static class SortBySingleCriteria extends Criteria {
+        @ApiParam(value = "date(작성일자) 또는 score(평점)", required = true)
+        private String sortBy;
+        @ApiParam(value = "asc(오름차순) 또는 desc(내림차순)", defaultValue = "asc")
+        private String order = "ASC";
+
+        public SortBySingleCriteria() {
+        }
+
+        public String getSortBy() {
+            return sortBy;
+        }
+
+        public void setSortBy(String sortBy) {
+            this.sortBy = SortType.valueOf(sortBy.trim().toUpperCase()).getTypeName();
+        }
+
+        public String getOrder() {
+            return order;
+        }
+
+        public void setOrder(String order) {
+            this.order = Optional.of(order.trim())
+                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
+                    .orElse("ASC");
+        }
+    }
 
     public Review() {
     }

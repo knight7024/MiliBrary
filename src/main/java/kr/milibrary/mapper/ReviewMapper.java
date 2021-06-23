@@ -21,8 +21,8 @@ public interface ReviewMapper {
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
             "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "ORDER BY created_at DESC LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
-    List<Review> getReviews(@Param("bookId") int bookId, @Param("criteria") Criteria criteria);
+            "ORDER BY ${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
+    List<Review> getReviews(@Param("bookId") int bookId, @Param("criteria") Review.SortBySingleCriteria criteria);
 
     @Select("SELECT ROUND(AVG(score), 1) AS averageScore FROM milibrary.reviews WHERE book_id = #{bookId} GROUP BY book_id;")
     Float getAverageScore(@Param("bookId") int bookId);
@@ -32,8 +32,7 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
-            "ON id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId} " +
-            "ORDER BY created_at DESC;")
+            "ON id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId};")
     Review getReviewById(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     @Update("UPDATE milibrary.reviews SET score = #{review.score}, comment = #{review.comment} WHERE id = #{reviewId} AND book_id = #{bookId};")
@@ -70,8 +69,8 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
-    List<Review> getMyReviews(@Param("narasarangId") String narasarangId, @Param("criteria") Criteria criteria);
+            "ON t1.narasarang_id = t2.narasarang_id ORDER BY t1.${criteria.sortBy} t1.${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
+    List<Review> getMyReviews(@Param("narasarangId") String narasarangId, @Param("criteria") Review.SortBySingleCriteria criteria);
 
     @Select("SELECT COUNT(*) FROM milibrary.reviews;")
     int getTotalCount();

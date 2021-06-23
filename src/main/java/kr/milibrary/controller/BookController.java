@@ -5,7 +5,6 @@ import kr.milibrary.annotation.Auth;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Book;
 import kr.milibrary.domain.BookList;
-import kr.milibrary.domain.Criteria;
 import kr.milibrary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +48,7 @@ public class BookController {
             @ApiResponse(code = 400, message = "잘못된 쿼리를 입력했을 때")
     })
     @GetMapping(value = "/books", params = "sortBy")
-    public ResponseEntity<BaseResponse> getBooksSortBySingle(Criteria.SortBySingleCriteria criteria) {
+    public ResponseEntity<BaseResponse> getBooksSortBySingle(Book.SortBySingleCriteria criteria) {
         BaseResponse response = bookService.getBooksSortBySingle(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -60,7 +59,7 @@ public class BookController {
             @ApiResponse(code = 400, message = "잘못된 쿼리를 입력했을 때")
     })
     @GetMapping(value = "/books", params = "sort")
-    public ResponseEntity<BaseResponse> getBooksSortByMultiple(Criteria.SortByMultipleCriteria criteria) {
+    public ResponseEntity<BaseResponse> getBooksSortByMultiple(Book.SortByMultipleCriteria criteria) {
         BaseResponse response = bookService.getBooksSortByMultiple(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -70,7 +69,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "", response = BookList.class)
     })
     @GetMapping(value = "/search/book")
-    public ResponseEntity<BaseResponse> searchBooks(Criteria.SearchCriteria criteria) {
+    public ResponseEntity<BaseResponse> searchBooks(Book.SearchCriteria criteria) {
         BaseResponse response = bookService.searchBooks(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }

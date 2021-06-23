@@ -44,17 +44,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BaseResponse getBooksSortBySingle(Criteria.SortBySingleCriteria criteria) {
+    public BaseResponse getBooksSortBySingle(Book.SortBySingleCriteria criteria) {
         return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.getBooksSortBySingle(criteria)), HttpStatus.OK);
     }
 
     @Override
-    public BaseResponse getBooksSortByMultiple(Criteria.SortByMultipleCriteria criteria) {
+    public BaseResponse getBooksSortByMultiple(Book.SortByMultipleCriteria criteria) {
         return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.getBooksSortByMultiple(criteria)), HttpStatus.OK);
     }
 
     @Override
-    public BaseResponse searchBooks(Criteria.SearchCriteria criteria) {
+    public BaseResponse searchBooks(Book.SearchCriteria criteria) {
         return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.searchBooks(criteria)), HttpStatus.OK);
     }
 

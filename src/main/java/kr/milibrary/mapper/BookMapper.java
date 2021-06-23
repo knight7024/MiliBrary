@@ -22,13 +22,13 @@ public interface BookMapper {
     List<Book> getRandomBooks(@Param("size") Integer size);
 
     @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
-    List<Book> getBooksSortBySingle(@Param("criteria") Criteria.SortBySingleCriteria criteria);
+    List<Book> getBooksSortBySingle(@Param("criteria") Book.SortBySingleCriteria criteria);
 
     @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books ORDER BY ${criteria.sort} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
-    List<Book> getBooksSortByMultiple(@Param("criteria") Criteria.SortByMultipleCriteria criteria);
+    List<Book> getBooksSortByMultiple(@Param("criteria") Book.SortByMultipleCriteria criteria);
 
     @Select("SELECT id, year, quarter, categoryName, title, description, itemPage, isbn, pub_date, authors, thumbnail FROM milibrary.books WHERE ${criteria.target} LIKE CONCAT('%', IF(#{criteria.query} = '', null, #{criteria.query}), '%') LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
-    List<Book> searchBooks(@Param("criteria") Criteria.SearchCriteria criteria);
+    List<Book> searchBooks(@Param("criteria") Book.SearchCriteria criteria);
 
     @Select("SELECT COUNT(*) FROM milibrary.books;")
     int getTotalCount();

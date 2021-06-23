@@ -31,7 +31,8 @@ public class JwtUtil {
 
     public enum JwtType {
         ACCESS_TOKEN("accessToken", TimeUnit.MINUTES.toSeconds(5)),
-        REFRESH_TOKEN("refreshToken", TimeUnit.DAYS.toSeconds(30));
+        REFRESH_TOKEN("refreshToken", TimeUnit.DAYS.toSeconds(30))
+        ;
 
         private final String jwtType;
         private final long expiresIn;

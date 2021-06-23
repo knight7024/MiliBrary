@@ -1,12 +1,12 @@
 package kr.milibrary.service;
 
 import kr.milibrary.domain.BaseResponse;
-import kr.milibrary.domain.Criteria;
+import kr.milibrary.domain.Book;
 
 public interface BookService {
     BaseResponse getBook(int bookId);
     BaseResponse getRandomBooks(Integer size);
-    BaseResponse getBooksSortBySingle(Criteria.SortBySingleCriteria sortBySingleCriteria);
-    BaseResponse getBooksSortByMultiple(Criteria.SortByMultipleCriteria sortByMultipleCriteria);
-    BaseResponse searchBooks(Criteria.SearchCriteria searchCriteria);
+    BaseResponse getBooksSortBySingle(Book.SortBySingleCriteria sortBySingleCriteria);
+    BaseResponse getBooksSortByMultiple(Book.SortByMultipleCriteria sortByMultipleCriteria);
+    BaseResponse searchBooks(Book.SearchCriteria searchCriteria);
 }

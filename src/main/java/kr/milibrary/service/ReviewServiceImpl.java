@@ -1,7 +1,9 @@
 package kr.milibrary.service;
 
-import kr.milibrary.domain.*;
-import kr.milibrary.exception.BadRequestException;
+import kr.milibrary.domain.BaseResponse;
+import kr.milibrary.domain.Review;
+import kr.milibrary.domain.ReviewList;
+import kr.milibrary.domain.User;
 import kr.milibrary.exception.ConflictException;
 import kr.milibrary.exception.NotFoundException;
 import kr.milibrary.mapper.ReviewMapper;
@@ -50,7 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getReviews(int bookId, Criteria criteria) throws NotFoundException {
+    public BaseResponse getReviews(int bookId, Review.SortBySingleCriteria criteria) throws NotFoundException {
         Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(calculateTotalPage(criteria.getLimit()), reviewMapper.getReviews(bookId, criteria)));
 
         return new BaseResponse(reviewListOptional.get(), HttpStatus.OK);
@@ -93,7 +95,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getMyReviews(String narasarangId, Criteria criteria) {
+    public BaseResponse getMyReviews(String narasarangId, Review.SortBySingleCriteria criteria) {
         User dbUser = getUserByNarasarangId(narasarangId);
 
         return new BaseResponse(new ReviewList(calculateTotalPage(criteria.getLimit(), narasarangId), reviewMapper.getMyReviews(dbUser.getNarasarangId(), criteria)), HttpStatus.OK);
