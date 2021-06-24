@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Review extends BaseDomain {
@@ -48,31 +46,37 @@ public class Review extends BaseDomain {
         }
     }
 
-    public static class SortBySingleCriteria extends Criteria {
-        @ApiParam(value = "date(작성일자) 또는 score(평점)", required = true)
-        private String sortBy;
-        @ApiParam(value = "asc(오름차순) 또는 desc(내림차순)", defaultValue = "asc")
-        private String order = "ASC";
+    public static class CursorCriteria extends Criteria {
+        private String cursor;
+        @ApiModelProperty(hidden = true)
+        private Integer lastId = null;
+        @ApiModelProperty(hidden = true)
+        private LocalDateTime date = null;
+        @ApiModelProperty(hidden = true)
+        private Double score = null;
 
-        public SortBySingleCriteria() {
+        public CursorCriteria() {
         }
 
-        public String getSortBy() {
-            return sortBy;
+        public String getCursor() {
+            return cursor;
         }
 
-        public void setSortBy(String sortBy) {
-            this.sortBy = SortType.valueOf(sortBy.trim().toUpperCase()).getTypeName();
+        public void setCursor(String cursor) {
+            // ToDo: lastId, date, score 추출
+            this.cursor = cursor;
         }
 
-        public String getOrder() {
-            return order;
+        public Integer getLastId() {
+            return lastId;
         }
 
-        public void setOrder(String order) {
-            this.order = Optional.of(order.trim())
-                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
-                    .orElse("ASC");
+        public LocalDateTime getDate() {
+            return date;
+        }
+
+        public Double getScore() {
+            return score;
         }
     }
 

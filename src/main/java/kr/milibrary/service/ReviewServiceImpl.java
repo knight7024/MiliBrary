@@ -52,7 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getReviews(int bookId, Review.SortBySingleCriteria criteria) throws NotFoundException {
+    public BaseResponse getReviews(int bookId, Review.CursorCriteria criteria) throws NotFoundException {
         Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(calculateTotalPage(criteria.getLimit()), reviewMapper.getReviews(bookId, criteria)));
 
         return new BaseResponse(reviewListOptional.get(), HttpStatus.OK);
@@ -95,7 +95,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public BaseResponse getMyReviews(String narasarangId, Review.SortBySingleCriteria criteria) {
+    public BaseResponse getMyReviews(String narasarangId, Review.CursorCriteria criteria) {
         User dbUser = getUserByNarasarangId(narasarangId);
 
         return new BaseResponse(new ReviewList(calculateTotalPage(criteria.getLimit(), narasarangId), reviewMapper.getMyReviews(dbUser.getNarasarangId(), criteria)), HttpStatus.OK);

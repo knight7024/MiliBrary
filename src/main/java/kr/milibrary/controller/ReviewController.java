@@ -41,7 +41,7 @@ public class ReviewController {
             @ApiResponse(code = 404, message = "입력한 책 id가 존재하지 않을 때")
     })
     @GetMapping("/book/{bookId}/reviews")
-    public ResponseEntity<BaseResponse> getReviews(@PathVariable int bookId, Review.SortBySingleCriteria criteria) {
+    public ResponseEntity<BaseResponse> getReviews(@PathVariable int bookId, Review.CursorCriteria criteria) {
         BaseResponse response = reviewService.getReviews(bookId, criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -93,7 +93,7 @@ public class ReviewController {
             @ApiResponse(code = 200, message = "", response = ReviewList.class)
     })
     @GetMapping("/reviews/my")
-    public ResponseEntity<BaseResponse> getMyReviews(@JwtSession @ApiParam(hidden = true) String narasarangId, Review.SortBySingleCriteria criteria) {
+    public ResponseEntity<BaseResponse> getMyReviews(@JwtSession @ApiParam(hidden = true) String narasarangId, Review.CursorCriteria criteria) {
         BaseResponse response = reviewService.getMyReviews(narasarangId, criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }

@@ -65,7 +65,7 @@ public class Book extends BaseDomain {
         }
     }
 
-    public static class SearchCriteria extends Criteria {
+    public static class SearchCriteria extends Criteria.OffsetCriteria {
         @ApiParam(value = "검색어", required = true)
         private String query;
         @ApiParam(value = "author(저자) 또는 title(제목)", defaultValue = "title")
@@ -97,7 +97,7 @@ public class Book extends BaseDomain {
         }
     }
 
-    public static class SortBySingleCriteria extends Criteria {
+    public static class SortBySingleCriteria extends Criteria.OffsetCriteria {
         @ApiParam(value = "year(연도) 또는 qtr(분기)", required = true)
         private String sortBy;
         @ApiParam(value = "asc(오름차순) 또는 desc(내림차순)", defaultValue = "asc")
@@ -125,7 +125,7 @@ public class Book extends BaseDomain {
         }
     }
 
-    public static class SortByMultipleCriteria extends Criteria {
+    public static class SortByMultipleCriteria extends Criteria.OffsetCriteria {
         @ApiParam(value = "1개 이상의 `기준:순서`(ex. year:asc,qtr:desc)", required = true)
         private String sort;
 
