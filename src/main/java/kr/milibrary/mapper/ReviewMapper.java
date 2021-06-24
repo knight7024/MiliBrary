@@ -21,7 +21,7 @@ public interface ReviewMapper {
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
             "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "ORDER BY ${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
+            "ORDER BY t1.${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
     List<Review> getReviews(@Param("bookId") int bookId, @Param("criteria") Review.SortBySingleCriteria criteria);
 
     @Select("SELECT ROUND(AVG(score), 1) AS averageScore FROM milibrary.reviews WHERE book_id = #{bookId} GROUP BY book_id;")
@@ -69,7 +69,7 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id ORDER BY t1.${criteria.sortBy} t1.${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
+            "ON t1.narasarang_id = t2.narasarang_id ORDER BY t1.${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
     List<Review> getMyReviews(@Param("narasarangId") String narasarangId, @Param("criteria") Review.SortBySingleCriteria criteria);
 
     @Select("SELECT COUNT(*) FROM milibrary.reviews;")
