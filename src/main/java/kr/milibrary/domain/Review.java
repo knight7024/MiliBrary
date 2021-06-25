@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Review extends BaseDomain {
@@ -47,15 +49,34 @@ public class Review extends BaseDomain {
     }
 
     public static class CursorCriteria extends Criteria {
-        private String cursor;
+        @ApiParam(value = "date(작성일자) 또는 score(평점)", required = true)
+        private String sortBy;
+        @ApiParam(value = "asc(오름차순) 또는 desc(내림차순)", defaultValue = "asc")
+        private String order = "ASC";
         @ApiModelProperty(hidden = true)
-        private Integer lastId = null;
+        private String cursor = "0";
         @ApiModelProperty(hidden = true)
-        private LocalDateTime date = null;
-        @ApiModelProperty(hidden = true)
-        private Double score = null;
+        private Integer lastId = 0;
 
         public CursorCriteria() {
+        }
+
+        public String getSortBy() {
+            return sortBy;
+        }
+
+        public void setSortBy(String sortBy) {
+            this.sortBy = SortType.valueOf(sortBy.trim().toUpperCase()).getTypeName();
+        }
+
+        public String getOrder() {
+            return order;
+        }
+
+        public void setOrder(String order) {
+            this.order = Optional.of(order.trim())
+                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
+                    .orElse("ASC");
         }
 
         public String getCursor() {
@@ -63,7 +84,6 @@ public class Review extends BaseDomain {
         }
 
         public void setCursor(String cursor) {
-            // ToDo: lastId, date, score 추출
             this.cursor = cursor;
         }
 
@@ -71,12 +91,8 @@ public class Review extends BaseDomain {
             return lastId;
         }
 
-        public LocalDateTime getDate() {
-            return date;
-        }
-
-        public Double getScore() {
-            return score;
+        public void setLastId(Integer lastId) {
+            this.lastId = lastId;
         }
     }
 

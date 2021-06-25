@@ -145,7 +145,7 @@ public class Book extends BaseDomain {
 
                 // :로 자르고
                 List<String> sortingKeys = new ArrayList<>();
-                Set<String> keywordMap = new HashSet<>();
+                Set<String> columnNameSet = new HashSet<>();
                 for (String item : sortPair) {
                     String[] itemPair = item.split(":");
                     String columnName = itemPair[0].trim();
@@ -159,8 +159,8 @@ public class Book extends BaseDomain {
                             .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
                             .orElseThrow(IllegalArgumentException::new);
 
-                    if (!keywordMap.contains(columnName)) {
-                        keywordMap.add(columnName);
+                    if (!columnNameSet.contains(columnName)) {
+                        columnNameSet.add(columnName);
                     } else {
                         throw new IllegalArgumentException();
                     }

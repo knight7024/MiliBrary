@@ -14,6 +14,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service("reviewService")
@@ -53,9 +55,25 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public BaseResponse getReviews(int bookId, Review.CursorCriteria criteria) throws NotFoundException {
-        Optional<ReviewList> reviewListOptional = Optional.of(new ReviewList(calculateTotalPage(criteria.getLimit()), reviewMapper.getReviews(bookId, criteria)));
+        List<Review> reviewList = new ArrayList<>();
+        // 정렬 기준이 평점이라면
+        if (Review.SortType.SCORE.getTypeName().equals(criteria.getSortBy())) {
+            if ("ASC".equalsIgnoreCase(criteria.getOrder())) {
+                reviewList = reviewMapper.getReviewsByScoreAsc(bookId, criteria);
+            } else if ("DESC".equalsIgnoreCase(criteria.getOrder())) {
+                reviewList = reviewMapper.getReviewsByScoreDesc(bookId, criteria);
+            }
+        }
+        // 정렬 기준이 작성일자라면
+        else if (Review.SortType.DATE.getTypeName().equals(criteria.getSortBy())) {
+            if ("ASC".equalsIgnoreCase(criteria.getOrder())) {
+                reviewList = reviewMapper.getReviewsByDateAsc(bookId, criteria);
+            } else if ("DESC".equalsIgnoreCase(criteria.getOrder())) {
+                reviewList = reviewMapper.getReviewsByDateDesc(bookId, criteria);
+            }
+        }
 
-        return new BaseResponse(reviewListOptional.get(), HttpStatus.OK);
+        return new BaseResponse(new ReviewList(reviewList), HttpStatus.OK);
     }
 
     @Override
@@ -98,14 +116,6 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse getMyReviews(String narasarangId, Review.CursorCriteria criteria) {
         User dbUser = getUserByNarasarangId(narasarangId);
 
-        return new BaseResponse(new ReviewList(calculateTotalPage(criteria.getLimit(), narasarangId), reviewMapper.getMyReviews(dbUser.getNarasarangId(), criteria)), HttpStatus.OK);
-    }
-
-    private int calculateTotalPage(int limit) {
-        return (int) Math.ceil((double) reviewMapper.getTotalCount() / limit);
-    }
-
-    private int calculateTotalPage(int limit, String narasarangId) {
-        return (int) Math.ceil((double) reviewMapper.getTotalCountByNarasarangId(narasarangId) / limit);
+        return new BaseResponse(new ReviewList(reviewMapper.getMyReviews(dbUser.getNarasarangId(), criteria)), HttpStatus.OK);
     }
 }
