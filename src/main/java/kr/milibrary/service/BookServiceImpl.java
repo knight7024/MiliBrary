@@ -45,20 +45,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BaseResponse getBooksSortBySingle(Book.SortBySingleCriteria criteria) {
-        return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.getBooksSortBySingle(criteria)), HttpStatus.OK);
+        return new BaseResponse(new BookList(calculateTotalPage(bookMapper.getTotalCount(), criteria.getLimit()), bookMapper.getBooksSortBySingle(criteria)), HttpStatus.OK);
     }
 
     @Override
     public BaseResponse getBooksSortByMultiple(Book.SortByMultipleCriteria criteria) {
-        return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.getBooksSortByMultiple(criteria)), HttpStatus.OK);
+        return new BaseResponse(new BookList(calculateTotalPage(bookMapper.getTotalCount(), criteria.getLimit()), bookMapper.getBooksSortByMultiple(criteria)), HttpStatus.OK);
     }
 
     @Override
     public BaseResponse searchBooks(Book.SearchCriteria criteria) {
-        return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.searchBooks(criteria)), HttpStatus.OK);
+        return new BaseResponse(new BookList(calculateTotalPage(bookMapper.getTotalCountBySearch(criteria), criteria.getLimit()), bookMapper.searchBooks(criteria)), HttpStatus.OK);
     }
 
-    private int calculateTotalPage(int limit) {
-        return (int) Math.ceil((double) bookMapper.getTotalCount() / limit);
+    private long calculateTotalPage(long totalCount, long limit) {
+        return (long) Math.ceil((double) totalCount / limit);
     }
 }
