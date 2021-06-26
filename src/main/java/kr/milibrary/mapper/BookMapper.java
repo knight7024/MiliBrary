@@ -31,5 +31,5 @@ public interface BookMapper {
     List<Book> searchBooks(@Param("criteria") Book.SearchCriteria criteria);
 
     @Select("SELECT COUNT(*) FROM milibrary.books;")
-    int getTotalCount();
+    long getTotalCount();
 }
