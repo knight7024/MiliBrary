@@ -52,11 +52,11 @@ public class Review extends BaseDomain {
         @ApiParam(value = "date(작성일자) 또는 score(평점)", required = true)
         private String sortBy;
         @ApiParam(value = "asc(오름차순) 또는 desc(내림차순)", defaultValue = "asc")
-        private String order = "ASC";
+        private String order = "asc";
         @ApiModelProperty(hidden = true)
-        private String cursor = "0";
+        private String cursor = null;
         @ApiModelProperty(hidden = true)
-        private Integer lastId = 0;
+        private Integer lastId = null;
 
         public CursorCriteria() {
         }
@@ -75,12 +75,12 @@ public class Review extends BaseDomain {
 
         public void setOrder(String order) {
             this.order = Optional.of(order.trim())
-                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
-                    .orElse("ASC");
+                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("asc") || keyword.equalsIgnoreCase("desc")))
+                    .orElse("asc");
         }
 
         public String getCursor() {
-            return cursor;
+            return cursor == null ? ("asc".equalsIgnoreCase(order) ? "0" : String.format("1%09d", 0)) : cursor;
         }
 
         public void setCursor(String cursor) {
@@ -88,7 +88,7 @@ public class Review extends BaseDomain {
         }
 
         public Integer getLastId() {
-            return lastId;
+            return lastId == null ? ("asc".equalsIgnoreCase(order) ? 0 : (int) Math.pow(10, 10)) : lastId;
         }
 
         public void setLastId(Integer lastId) {

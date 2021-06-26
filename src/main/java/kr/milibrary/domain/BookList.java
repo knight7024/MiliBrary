@@ -7,8 +7,8 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookList extends BaseDomain {
-    protected Integer totalPage = null;
-    protected List<Book> bookList;
+    private Integer totalPage = null;
+    private List<Book> bookList;
 
     public BookList() {
     }

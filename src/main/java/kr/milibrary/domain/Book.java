@@ -101,7 +101,7 @@ public class Book extends BaseDomain {
         @ApiParam(value = "year(연도) 또는 qtr(분기)", required = true)
         private String sortBy;
         @ApiParam(value = "asc(오름차순) 또는 desc(내림차순)", defaultValue = "asc")
-        private String order = "ASC";
+        private String order = "asc";
 
         public SortBySingleCriteria() {
         }
@@ -120,8 +120,8 @@ public class Book extends BaseDomain {
 
         public void setOrder(String order) {
             this.order = Optional.of(order.trim())
-                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
-                    .orElse("ASC");
+                    .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("asc") || keyword.equalsIgnoreCase("desc")))
+                    .orElse("asc");
         }
     }
 
@@ -156,7 +156,7 @@ public class Book extends BaseDomain {
                     columnName = SortType.valueOf(columnName.toUpperCase()).getTypeName();
 
                     order = Optional.of(order)
-                            .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("ASC") || keyword.equalsIgnoreCase("DESC")))
+                            .filter(keyword -> !keyword.isEmpty() & (keyword.equalsIgnoreCase("asc") || keyword.equalsIgnoreCase("desc")))
                             .orElseThrow(IllegalArgumentException::new);
 
                     if (!columnNameSet.contains(columnName)) {

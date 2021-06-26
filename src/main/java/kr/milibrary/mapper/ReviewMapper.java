@@ -14,45 +14,55 @@ public interface ReviewMapper {
     @Options(useGeneratedKeys = true, keyProperty = "review.id")
     void createReview(@Param("bookId") int bookId, @Param("review") Review review) throws DataAccessException;
 
-    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(t1.score * 2, 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
             "FROM milibrary.reviews AS t1 " +
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
             "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "HAVING last_cursor > CONCAT(LPAD(${criteria.cursor} * 2, 2, 0), LPAD(${criteria.lastId}, 10, 0)) " +
+            "HAVING last_cursor > CONCAT(LPAD(CONVERT(${criteria.cursor} * 2, SIGNED INTEGER), 2, 0), LPAD(${criteria.lastId}, 10, 0)) " +
             "ORDER BY t1.score ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
     List<Review> getReviewsByScoreAsc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
 
-    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(t1.score * 2, 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
             "FROM milibrary.reviews AS t1 " +
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
             "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "HAVING last_cursor < CONCAT(LPAD(${criteria.cursor} * 2, 2, 0), LPAD(${criteria.lastId}, 10, 0)) " +
+            "HAVING last_cursor < CONCAT(LPAD(CONVERT(${criteria.cursor} * 2, SIGNED INTEGER), 2, 0), LPAD(${criteria.lastId}, 10, 0)) " +
             "ORDER BY t1.score ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
     List<Review> getReviewsByScoreDesc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
 
-    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(UNIX_TIMESTAMP(t1.created_at), LPAD(t1.id, 10, 0)) AS last_cursor " +
-            "FROM milibrary.reviews AS t1 " +
-            "JOIN (" +
-            "SELECT narasarang_id, nickname FROM milibrary.users" +
-            ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "HAVING last_cursor > CONCAT(LPAD(IFNULL(UNIX_TIMESTAMP(${criteria.date}), 0), 10, 0), LPAD(${criteria.id}, 10, 0)) " +
-            "ORDER BY t1.created_at ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
-    List<Review> getReviewsByDateAsc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
+//    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(UNIX_TIMESTAMP(t1.created_at), LPAD(t1.id, 10, 0)) AS last_cursor " +
+//            "FROM milibrary.reviews AS t1 " +
+//            "JOIN (" +
+//            "SELECT narasarang_id, nickname FROM milibrary.users" +
+//            ") AS t2 " +
+//            "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
+//            "HAVING last_cursor > CONCAT(${criteria.cursor}, LPAD(${criteria.lastId}, 10, 0)) " +
+//            "ORDER BY t1.created_at ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
+//    List<Review> getReviewsByDateAsc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
 
-    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(UNIX_TIMESTAMP(t1.created_at), LPAD(t1.id, 10, 0)) AS last_cursor " +
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
             "FROM milibrary.reviews AS t1 " +
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
             "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
-            "HAVING last_cursor < CONCAT(LPAD(IFNULL(UNIX_TIMESTAMP(${criteria.date}), 0), 10, 0), LPAD(${criteria.id}, 10, 0)) " +
-            "ORDER BY t1.created_at ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
-    List<Review> getReviewsByDateDesc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
+            "HAVING t1.id > ${criteria.lastId} " +
+            "ORDER BY t1.id ${criteria.order} LIMIT #{criteria.limit};")
+    List<Review> getReviewsByIdAsc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT narasarang_id, nickname FROM milibrary.users" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId} " +
+            "HAVING t1.id < ${criteria.lastId} " +
+            "ORDER BY t1.id ${criteria.order} LIMIT #{criteria.limit};")
+    List<Review> getReviewsByIdDesc(@Param("bookId") int bookId, @Param("criteria") Review.CursorCriteria criteria);
 
     @Select("SELECT ROUND(AVG(score), 1) AS averageScore FROM milibrary.reviews WHERE book_id = #{bookId} GROUP BY book_id;")
     Float getAverageScore(@Param("bookId") int bookId);
@@ -89,16 +99,48 @@ public interface ReviewMapper {
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
             "FROM milibrary.reviews AS t1 " +
             "JOIN (" +
-            "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId};")
+            "ON t1.narasarang_id = #{narasarangId} AND book_id = #{bookId};")
     Review getMyReview(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = #{narasarangId} " +
+            "HAVING last_cursor > CONCAT(LPAD(CONVERT(${criteria.cursor} * 2, SIGNED INTEGER), 2, 0), LPAD(${criteria.lastId}, 10, 0)) " +
+            "ORDER BY t1.score ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
+    List<Review> getMyReviewsByScoreAsc(@Param("narasarangId") String narasarangId, @Param("criteria") Review.CursorCriteria criteria);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = #{narasarangId} " +
+            "HAVING last_cursor < CONCAT(LPAD(CONVERT(${criteria.cursor} * 2, SIGNED INTEGER), 2, 0), LPAD(${criteria.lastId}, 10, 0)) " +
+            "ORDER BY t1.score ${criteria.order}, t1.id ${criteria.order} LIMIT #{criteria.limit};")
+    List<Review> getMyReviewsByScoreDesc(@Param("narasarangId") String narasarangId, @Param("criteria") Review.CursorCriteria criteria);
 
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
             "FROM milibrary.reviews AS t1 " +
             "JOIN (" +
-            "SELECT narasarang_id, nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON t1.narasarang_id = t2.narasarang_id ORDER BY t1.${criteria.sortBy} ${criteria.order} LIMIT #{criteria.limit} OFFSET #{criteria.offset};")
-    List<Review> getMyReviews(@Param("narasarangId") String narasarangId, @Param("criteria") Review.CursorCriteria criteria);
+            "ON t1.narasarang_id = #{narasarangId} " +
+            "HAVING t1.id > ${criteria.lastId} " +
+            "ORDER BY t1.id ${criteria.order} LIMIT #{criteria.limit};")
+    List<Review> getMyReviewsByIdAsc(@Param("narasarangId") String narasarangId, @Param("criteria") Review.CursorCriteria criteria);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            ") AS t2 " +
+            "ON t1.narasarang_id = #{narasarangId} " +
+            "HAVING t1.id < ${criteria.lastId} " +
+            "ORDER BY t1.id ${criteria.order} LIMIT #{criteria.limit};")
+    List<Review> getMyReviewsByIdDesc(@Param("narasarangId") String narasarangId, @Param("criteria") Review.CursorCriteria criteria);
 }
