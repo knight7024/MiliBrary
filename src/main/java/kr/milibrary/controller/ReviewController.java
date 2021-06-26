@@ -26,7 +26,7 @@ public class ReviewController {
 
     @ApiOperation(value = "리뷰 작성", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "리뷰 작성에 성공했을 때"),
+            @ApiResponse(code = 201, message = "리뷰 작성에 성공했을 때", response = Review.class),
             @ApiResponse(code = 409, message = "리뷰를 중복해서 작성했을 때")
     })
     @PostMapping("/book/{bookId}/review")
@@ -48,7 +48,7 @@ public class ReviewController {
 
     @ApiOperation(value = "리뷰 수정", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "리뷰 수정에 성공했을 때"),
+            @ApiResponse(code = 201, message = "리뷰 수정에 성공했을 때", response = Review.class),
             @ApiResponse(code = 404, message = "입력한 리뷰 id가 존재하지 않을 때")
     })
     @PatchMapping("/book/{bookId}/review/{reviewId}")

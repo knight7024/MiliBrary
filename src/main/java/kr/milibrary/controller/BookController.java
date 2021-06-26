@@ -35,7 +35,7 @@ public class BookController {
 
     @ApiOperation(value = "랜덤 책 불러오기", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "", response = Book.class)
+            @ApiResponse(code = 200, message = "", response = BookList.class)
     })
     @GetMapping("/book/random")
     public ResponseEntity<BaseResponse> getRandomBooks(@ApiParam(value = "1~10", defaultValue = "5", example = "5") @RequestParam Integer size) {
