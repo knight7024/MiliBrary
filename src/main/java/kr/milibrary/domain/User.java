@@ -42,7 +42,7 @@ public class User extends BaseDomain {
     }
 
     public String getPassword() {
-        return password.toLowerCase();
+        return password;
     }
 
     public void setPassword(String password) {
