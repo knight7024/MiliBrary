@@ -48,7 +48,7 @@ public class BookController {
             @ApiResponse(code = 400, message = "잘못된 쿼리를 입력했을 때")
     })
     @GetMapping(value = "/books", params = "sortBy")
-    public ResponseEntity<BaseResponse> getBooksSortBySingle(Book.SortBySingleCriteria criteria) {
+    public ResponseEntity<BaseResponse> getBooksSortBySingle(@Valid Book.SortBySingleCriteria criteria) {
         BaseResponse response = bookService.getBooksSortBySingle(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -59,7 +59,7 @@ public class BookController {
             @ApiResponse(code = 400, message = "잘못된 쿼리를 입력했을 때")
     })
     @GetMapping(value = "/books", params = "sort")
-    public ResponseEntity<BaseResponse> getBooksSortByMultiple(Book.SortByMultipleCriteria criteria) {
+    public ResponseEntity<BaseResponse> getBooksSortByMultiple(@Valid Book.SortByMultipleCriteria criteria) {
         BaseResponse response = bookService.getBooksSortByMultiple(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
@@ -69,7 +69,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "", response = BookList.class)
     })
     @GetMapping(value = "/search/book")
-    public ResponseEntity<BaseResponse> searchBooks(Book.SearchCriteria criteria) {
+    public ResponseEntity<BaseResponse> searchBooks(@Valid Book.SearchCriteria criteria) {
         BaseResponse response = bookService.searchBooks(criteria);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }

@@ -12,7 +12,7 @@ public abstract class Criteria {
     protected long limit = 10;
 
     public static class OffsetCriteria extends Criteria {
-        @Max(value = 100000, message = "page는 너무 클 수 없습니다.")
+        @Max(value = 10000000, message = "page는 너무 클 수 없습니다.")
         @ApiParam(value = "1 이상", defaultValue = "1")
         private long page = 1;
 
