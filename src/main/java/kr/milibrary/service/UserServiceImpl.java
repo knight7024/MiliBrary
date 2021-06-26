@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("나라사랑 아이디는 빈 값일 수 없습니다.");
         }
 
-        return Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId)).orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디는 가입되지 않았거나 존재하지 않습니다."));
+        return Optional.ofNullable(userMapper.getUserByNarasarangId(narasarangId)).orElseThrow(() -> new NotFoundException("해당 나라사랑 아이디가 존재하지 않습니다."));
     }
 
     private Token getToken(String token) throws BadRequestException {
@@ -71,6 +71,9 @@ public class UserServiceImpl implements UserService {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
 
         if (BCrypt.checkpw(user.getPassword(), dbUser.getPassword())) {
+            if (!dbUser.getRegistered()) {
+                throw new UnauthorizedException("본인인증이 아직 완료되지 않은 아이디입니다.");
+            }
             String hashParentKey = String.format("user:%s", dbUser.getNarasarangId());
             final HashOperations<String, Object, Object> hashOperations = stringRedisTemplate.opsForHash();
 
