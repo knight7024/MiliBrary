@@ -31,7 +31,7 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "로그인에 성공했을 때"),
+            @ApiResponse(code = 200, message = "로그인에 성공했을 때", response = User.class),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 401, message = "비밀번호가 틀렸거나 본인인증이 완료되지 않았을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
@@ -59,7 +59,7 @@ public class UserController {
 
     @ApiOperation(value = "AccessToken 갱신")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "AccessToken 갱신에 성공했을 때"),
+            @ApiResponse(code = 200, message = "AccessToken 갱신에 성공했을 때", response = Jwt.class),
             @ApiResponse(code = 401, message = "RefreshToken이 유효하지 않을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
     })
@@ -72,7 +72,7 @@ public class UserController {
 
     @ApiOperation(value = "회원가입")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "회원가입에 성공했을 때"),
+            @ApiResponse(code = 204, message = "회원가입에 성공했을 때"),
             @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
     })
     @ResponseBody
@@ -84,7 +84,7 @@ public class UserController {
 
     @ApiOperation(value = "회원가입 인증 메일 재전송")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "인증 메일 재전송에 성공했을 때"),
+            @ApiResponse(code = 204, message = "인증 메일 재전송에 성공했을 때"),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
@@ -104,6 +104,7 @@ public class UserController {
 
     @ApiOperation(value = "비밀번호 재설정")
     @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "비밀번호 재설정 메일 전송에 성공했을 때"),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "회원가입을 대기 중인 회원일 때")
