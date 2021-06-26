@@ -55,7 +55,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BaseResponse searchBooks(Book.SearchCriteria criteria) {
-        return new BaseResponse(new BookList(calculateTotalPage(bookMapper.getTotalCount(), criteria.getLimit()), bookMapper.searchBooks(criteria)), HttpStatus.OK);
+        return new BaseResponse(new BookList(calculateTotalPage(bookMapper.getTotalCountBySearch(criteria), criteria.getLimit()), bookMapper.searchBooks(criteria)), HttpStatus.OK);
     }
 
     private long calculateTotalPage(long totalCount, long limit) {

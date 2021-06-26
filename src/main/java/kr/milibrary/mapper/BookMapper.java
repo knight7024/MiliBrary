@@ -32,4 +32,7 @@ public interface BookMapper {
 
     @Select("SELECT COUNT(*) FROM milibrary.books;")
     long getTotalCount();
+
+    @Select("SELECT COUNT(*) FROM milibrary.books WHERE ${criteria.target} LIKE CONCAT('%', IF(#{criteria.query} = '', null, #{criteria.query}), '%');")
+    long getTotalCountBySearch(@Param("criteria") Book.SearchCriteria criteria);
 }
