@@ -6,6 +6,7 @@ import kr.milibrary.domain.BookList;
 import kr.milibrary.domain.Criteria;
 import kr.milibrary.exception.NotFoundException;
 import kr.milibrary.mapper.BookMapper;
+import kr.milibrary.mapper.ReviewMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,12 @@ import java.util.Optional;
 @Service("bookService")
 public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
+    private final ReviewMapper reviewMapper;
 
     @Autowired
-    public BookServiceImpl(BookMapper bookMapper) {
+    public BookServiceImpl(BookMapper bookMapper, ReviewMapper reviewMapper) {
         this.bookMapper = bookMapper;
+        this.reviewMapper = reviewMapper;
     }
 
     private Book getBookById(int bookId) throws NotFoundException {
@@ -27,7 +30,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BaseResponse getBook(int bookId) {
-        return new BaseResponse(getBookById(bookId), HttpStatus.OK);
+        Book dbBook = getBookById(bookId);
+        dbBook.setAverageScore(reviewMapper.getAverageScore(bookId));
+
+        return new BaseResponse(dbBook, HttpStatus.OK);
     }
 
     @Override
@@ -38,17 +44,21 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BaseResponse getBooksSortBySingle(Criteria.SortBySingleCriteria criteria) {
-        return new BaseResponse(new BookList(bookMapper.getBooksSortBySingle(criteria)), HttpStatus.OK);
+    public BaseResponse getBooksSortBySingle(Book.SortBySingleCriteria criteria) {
+        return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.getBooksSortBySingle(criteria)), HttpStatus.OK);
     }
 
     @Override
-    public BaseResponse getBooksSortByMultiple(Criteria.SortByMultipleCriteria criteria) {
-        return new BaseResponse(new BookList(bookMapper.getBooksSortByMultiple(criteria)), HttpStatus.OK);
+    public BaseResponse getBooksSortByMultiple(Book.SortByMultipleCriteria criteria) {
+        return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.getBooksSortByMultiple(criteria)), HttpStatus.OK);
     }
 
     @Override
-    public BaseResponse searchBooks(Criteria.SearchCriteria criteria) {
-        return new BaseResponse(new BookList(bookMapper.searchBooks(criteria)), HttpStatus.OK);
+    public BaseResponse searchBooks(Book.SearchCriteria criteria) {
+        return new BaseResponse(new BookList(calculateTotalPage(criteria.getLimit()), bookMapper.searchBooks(criteria)), HttpStatus.OK);
+    }
+
+    private int calculateTotalPage(int limit) {
+        return (int) Math.ceil((double) bookMapper.getTotalCount() / limit);
     }
 }
