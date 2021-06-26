@@ -37,7 +37,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "", response = BookList.class)
     })
     @GetMapping("/book/random")
-    public ResponseEntity<BaseResponse> getRandomBooks(@ApiParam(value = "1~10", defaultValue = "5", example = "5") @RequestParam Integer size) {
+    public ResponseEntity<BaseResponse> getRandomBooks(@ApiParam(value = "1~10", defaultValue = "5", example = "5") @RequestParam(required = false) Integer size) {
         BaseResponse response = bookService.getRandomBooks(size);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
