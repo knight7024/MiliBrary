@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse signIn(User user) throws UnauthorizedException {
         User dbUser = getUserByNarasarangId(user.getNarasarangId());
 
-        if (BCrypt.checkpw(user.getPassword(), dbUser.getPassword())) {
+        if (BCrypt.checkpw(user.getPassword().toLowerCase(), dbUser.getPassword())) {
             if (!dbUser.getRegistered()) {
                 throw new UnauthorizedException("본인인증이 아직 완료되지 않은 아이디입니다.");
             }
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse signUp(User user) throws ConflictException, DataAccessException {
         try {
             // 처음 가입하는 유저라면 DB에 저장 후 메일 전송
-            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            user.setPassword(BCrypt.hashpw(user.getPassword().toLowerCase(), BCrypt.gensalt()));
 
             // 유저의 나라사랑 아이디와 가입한 시간은 토큰이 된다.
             LocalDateTime now = LocalDateTime.now();
