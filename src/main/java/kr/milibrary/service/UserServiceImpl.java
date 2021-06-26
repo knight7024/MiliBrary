@@ -293,4 +293,11 @@ public class UserServiceImpl implements UserService {
 
         return true;
     }
+
+    @Override
+    public BaseResponse withdraw(User user) {
+        user.setRegistered(false);
+        userMapper.withdraw(user);
+        return new BaseResponse(HttpStatus.NO_CONTENT);
+    }
 }

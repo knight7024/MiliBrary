@@ -134,4 +134,15 @@ public class UserController {
     public String resetPassword(@RequestBody Map<String, Object> variables) {
         return userService.resetPassword(variables) ? "reset-password-success" : "error-page";
     }
+
+    @ApiOperation(value = "회원탈퇴(테스트 서버용, 유저네임만 넣으면 바로 탈퇴됨ㅋ)")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "회원탈퇴에 성공했을 때")
+    })
+    @ResponseBody
+    @PostMapping("/withdraw")
+    public ResponseEntity<BaseResponse> withdraw(@Validated(value = UserGroups.sendEmail.class) @RequestBody User user) {
+        BaseResponse response = userService.withdraw(user);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
 }

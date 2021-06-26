@@ -29,4 +29,7 @@ public interface UserMapper {
 
     @Update("UPDATE milibrary.users SET is_registered = #{registered}, registered_at = #{registeredAt} WHERE narasarang_id = #{narasarangId};")
     void updateUserRegistration(@Param("narasarangId") String narasarangId, @Param("registered") boolean registered, @Param("registeredAt") Timestamp registeredAt);
+
+    @Delete("UPDATE milibrary.users SET is_registered = #{registered} WHERE narasarang_id = #{narasarangId};")
+    void withdraw(User user);
 }

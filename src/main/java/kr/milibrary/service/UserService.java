@@ -18,4 +18,5 @@ public interface UserService {
     BaseResponse forgotPassword(User user);
     Map<String, Object> resetPasswordAuth(String token);
     boolean resetPassword(Map<String, Object> variables);
+    BaseResponse withdraw(User user);
 }
