@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Repository("userMapper")
 public interface UserMapper {
-    @Select("SELECT * FROM milibrary.users WHERE narasarang_id = #{narasarangId} AND is_registered = true;")
+    @Select("SELECT * FROM milibrary.users WHERE narasarang_id = #{narasarangId};")
     User getUserByNarasarangId(@Param("narasarangId") String narasarangId);
 
     @Insert("INSERT INTO milibrary.users (narasarang_id, password, nickname) " +
