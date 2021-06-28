@@ -10,9 +10,9 @@ import java.util.List;
 @Repository("reviewMapper")
 public interface ReviewMapper {
     @Insert("INSERT INTO milibrary.reviews (book_id, narasarang_id, score, comment) " +
-            "VALUES (#{bookId}, #{review.narasarangId}, #{review.score}, #{review.comment});")
+            "VALUES (#{review.bookId}, #{review.narasarangId}, #{review.score}, #{review.comment});")
     @Options(useGeneratedKeys = true, keyProperty = "review.id")
-    void createReview(@Param("bookId") int bookId, @Param("review") Review review) throws DataAccessException;
+    void createReview(@Param("review") Review review) throws DataAccessException;
 
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
             "FROM milibrary.reviews AS t1 " +
@@ -78,8 +78,8 @@ public interface ReviewMapper {
     @Update("UPDATE milibrary.reviews SET score = #{review.score}, comment = #{review.comment} WHERE id = #{reviewId} AND book_id = #{bookId};")
     void updateReview(@Param("bookId") int bookId, @Param("reviewId") int reviewId, @Param("review") Review review);
 
-    @Delete("DELETE FROM milibrary.reviews WHERE id = #{reviewId} AND book_id = #{bookId}")
-    int deleteReview(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
+    @Delete("DELETE FROM milibrary.reviews WHERE id = #{reviewId} AND book_id = #{bookId} AND narasarang_id = #{narasarangId}")
+    int deleteReview(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t3.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
             "FROM (" +
@@ -103,6 +103,14 @@ public interface ReviewMapper {
             ") AS t2 " +
             "ON t1.narasarang_id = #{narasarangId} AND book_id = #{bookId};")
     Review getMyReview(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId);
+
+    @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
+            "FROM milibrary.reviews AS t1 " +
+            "JOIN (" +
+            "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
+            ") AS t2 " +
+            "ON id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId};")
+    Review getMyReviewById(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
             "FROM milibrary.reviews AS t1 " +

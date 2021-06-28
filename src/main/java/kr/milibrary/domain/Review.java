@@ -160,9 +160,11 @@ public class Review extends BaseDomain {
     }
 
     public void update(Review review) {
-        if (review.getScore() != null)
+        if (review.getScore() != null) {
             score = review.getScore();
-        if (review.getComment() != null)
+        }
+        if (review.getComment() != null) {
             comment = review.getComment();
+        }
     }
 }

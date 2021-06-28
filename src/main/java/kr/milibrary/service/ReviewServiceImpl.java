@@ -31,6 +31,10 @@ public class ReviewServiceImpl implements ReviewService {
         this.userMapper = userMapper;
     }
 
+    private Review getMyReviewById(String narasarangId, int bookId, int reviewId) throws NotFoundException {
+        return Optional.ofNullable(reviewMapper.getMyReviewById(narasarangId, bookId, reviewId)).orElseThrow(() -> new NotFoundException("해당 리뷰가 존재하지 않습니다."));
+    }
+
     private Review getReviewById(int bookId, int reviewId) throws NotFoundException {
         return Optional.ofNullable(reviewMapper.getReviewById(bookId, reviewId)).orElseThrow(() -> new NotFoundException("해당 리뷰가 존재하지 않습니다."));
     }
@@ -44,15 +48,16 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             User dbUser = getUserByNarasarangId(narasarangId);
 
+            review.setBookId(bookId);
             review.setNarasarangId(dbUser.getNarasarangId());
-            reviewMapper.createReview(bookId, review);
+            reviewMapper.createReview(review);
+
+            return new BaseResponse(getReviewById(bookId, review.getId()), HttpStatus.CREATED);
         } catch (DuplicateKeyException duplicateKeyException) {
             throw new ConflictException("리뷰는 중복해서 작성할 수 없습니다.");
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             throw new NotFoundException("해당 책이 존재하지 않습니다.");
         }
-
-        return new BaseResponse(getReviewById(bookId, review.getId()), HttpStatus.CREATED);
     }
 
     @Override
@@ -108,7 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse updateReview(String narasarangId, int bookId, int reviewId, Review review) {
         User dbUser = getUserByNarasarangId(narasarangId);
 
-        Review dbReview = getReviewById(bookId, reviewId);
+        Review dbReview = getMyReviewById(dbUser.getNarasarangId(), bookId, reviewId);
         dbReview.update(review);
         reviewMapper.updateReview(bookId, reviewId, dbReview);
 
@@ -119,7 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
     public BaseResponse deleteReview(String narasarangId, int bookId, int reviewId) throws NotFoundException {
         User dbUser = getUserByNarasarangId(narasarangId);
 
-        if (reviewMapper.deleteReview(bookId, reviewId) == 0) {
+        if (reviewMapper.deleteReview(dbUser.getNarasarangId(), bookId, reviewId) == 0) {
             throw new NotFoundException("해당 리뷰가 존재하지 않습니다.");
         }
 
