@@ -46,7 +46,7 @@ public class UserController {
     @Auth
     @ApiOperation(value = "로그아웃", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "로그아웃에 성공했을 때"),
+            @ApiResponse(code = 204, message = "로그아웃에 성공했을 때 아무런 반환값도 주지 않는다."),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때")
     })
@@ -72,7 +72,7 @@ public class UserController {
 
     @ApiOperation(value = "회원가입")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "회원가입에 성공했을 때"),
+            @ApiResponse(code = 204, message = "회원가입에 성공했을 때 아무런 반환값도 주지 않는다."),
             @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
     })
     @ResponseBody
@@ -84,7 +84,7 @@ public class UserController {
 
     @ApiOperation(value = "회원가입 인증 메일 재전송")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "인증 메일 재전송에 성공했을 때"),
+            @ApiResponse(code = 204, message = "인증 메일 재전송에 성공했을 때 아무런 반환값도 주지 않는다."),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "이미 회원가입을 시도한 회원일 때")
@@ -104,7 +104,7 @@ public class UserController {
 
     @ApiOperation(value = "비밀번호 재설정")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "비밀번호 재설정 메일 전송에 성공했을 때"),
+            @ApiResponse(code = 204, message = "비밀번호 재설정 메일 전송에 성공했을 때 아무런 반환값도 주지 않는다."),
             @ApiResponse(code = 400, message = "잘못된 아이디를 전송했을 때"),
             @ApiResponse(code = 404, message = "일치하는 아이디가 없을 때"),
             @ApiResponse(code = 409, message = "회원가입을 대기 중인 회원일 때")
