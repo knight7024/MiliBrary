@@ -11,4 +11,5 @@ public interface ReviewService {
     BaseResponse getRandomReviews(Integer size);
     BaseResponse getMyReview(String narasarangId, int bookId);
     BaseResponse getMyReviews(String narasarangId, Review.CursorCriteria criteria);
+    BaseResponse getReview(int bookId, int reviewId);
 }

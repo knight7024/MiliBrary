@@ -27,6 +27,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 작성", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "리뷰 작성에 성공했을 때", response = Review.class),
+            @ApiResponse(code = 404, message = "해당 책이 존재하지 않을 때"),
             @ApiResponse(code = 409, message = "리뷰를 중복해서 작성했을 때")
     })
     @PostMapping("/book/{bookId}/review")
@@ -49,7 +50,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 수정", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "리뷰 수정에 성공했을 때", response = Review.class),
-            @ApiResponse(code = 404, message = "입력한 리뷰 id가 존재하지 않을 때")
+            @ApiResponse(code = 404, message = "해당 책 또는 리뷰가 존재하지 않을 때")
     })
     @PatchMapping("/book/{bookId}/review/{reviewId}")
     public ResponseEntity<BaseResponse> updateReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @PathVariable int reviewId, @RequestBody Review review) {
@@ -60,7 +61,7 @@ public class ReviewController {
     @ApiOperation(value = "리뷰 삭제", authorizations = {@Authorization(value = "Authorization")})
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "리뷰 삭제에 성공했을 때 아무런 반환값도 주지 않는다."),
-            @ApiResponse(code = 404, message = "입력한 리뷰 id가 존재하지 않을 때")
+            @ApiResponse(code = 404, message = "해당 책 또는 리뷰가 존재하지 않을 때")
     })
     @DeleteMapping("/book/{bookId}/review/{reviewId}")
     public ResponseEntity<BaseResponse> deleteReview(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId, @PathVariable int reviewId) {
@@ -95,6 +96,17 @@ public class ReviewController {
     @GetMapping("/reviews/my")
     public ResponseEntity<BaseResponse> getMyReviews(@JwtSession @ApiParam(hidden = true) String narasarangId, Review.CursorCriteria criteria) {
         BaseResponse response = reviewService.getMyReviews(narasarangId, criteria);
+        return new ResponseEntity<>(response, response.getResponseStatus());
+    }
+
+    @ApiOperation(value = "특정 리뷰 불러오기", authorizations = {@Authorization(value = "Authorization")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "", response = Review.class),
+            @ApiResponse(code = 404, message = "해당 책 또는 리뷰가 존재하지 않을 때")
+    })
+    @GetMapping("/book/{bookId}/review/{reviewId}")
+    public ResponseEntity<BaseResponse> getReview(@PathVariable int bookId, @PathVariable int reviewId) {
+        BaseResponse response = reviewService.getReview(bookId, reviewId);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 }

@@ -189,4 +189,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         return new BaseResponse(new ReviewList(links, reviewList), HttpStatus.OK);
     }
+
+    @Override
+    public BaseResponse getReview(int bookId, int reviewId) {
+        return new BaseResponse(getReviewById(bookId, reviewId), HttpStatus.OK);
+    }
 }
