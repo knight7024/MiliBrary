@@ -72,7 +72,7 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT narasarang_id, nickname FROM milibrary.users" +
             ") AS t2 " +
-            "ON id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId};")
+            "ON t1.id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND t1.book_id = #{bookId};")
     Review getReviewById(@Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     @Update("UPDATE milibrary.reviews SET score = #{review.score}, comment = #{review.comment} WHERE id = #{reviewId} AND book_id = #{bookId};")
@@ -101,7 +101,7 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON t1.narasarang_id = #{narasarangId} AND book_id = #{bookId};")
+            "ON t1.narasarang_id = #{narasarangId} AND t1.book_id = #{bookId};")
     Review getMyReview(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId);
 
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at " +
@@ -109,7 +109,7 @@ public interface ReviewMapper {
             "JOIN (" +
             "SELECT nickname FROM milibrary.users WHERE narasarang_id = #{narasarangId}" +
             ") AS t2 " +
-            "ON id = #{reviewId} AND t1.narasarang_id = t2.narasarang_id AND book_id = #{bookId};")
+            "ON t1.id = #{reviewId} AND t1.narasarang_id = #{narasarangId} AND t1.book_id = #{bookId};")
     Review getMyReviewById(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId, @Param("reviewId") int reviewId);
 
     @Select("SELECT t1.id, t1.book_id, t1.narasarang_id, t2.nickname, t1.score, t1.comment, t1.created_at, t1.updated_at, CONCAT(LPAD(CONVERT(t1.score * 2, SIGNED INTEGER), 2, 0), LPAD(t1.id, 10, 0)) AS last_cursor " +
