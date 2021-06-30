@@ -31,6 +31,8 @@ public class Book extends BaseDomain {
     protected String thumbnail;
 
     protected Float averageScore = null;
+    @ApiModelProperty(value = "해당 책의 북마크 여부")
+    protected Boolean isBookmarked = null;
 
     public enum SortType {
         YEAR("year"),
@@ -234,5 +236,9 @@ public class Book extends BaseDomain {
 
     public void setAverageScore(Float averageScore) {
         this.averageScore = averageScore;
+    }
+
+    public boolean isBookmarked() {
+        return isBookmarked;
     }
 }

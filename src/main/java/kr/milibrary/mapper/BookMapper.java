@@ -10,8 +10,13 @@ import java.util.List;
 
 @Repository("bookMapper")
 public interface BookMapper {
-    @Select("SELECT * FROM milibrary.books WHERE id = #{bookId};")
-    Book getBook(@Param("bookId") int bookId);
+    @Select("SELECT t2.*, IFNULL(t1.id, false) AS 'is_bookmarked' " +
+            "FROM milibrary.bookmarks AS t1 " +
+            "RIGHT JOIN (" +
+            "SELECT * FROM milibrary.books WHERE id = #{bookId}" +
+            ") AS t2 " +
+            "ON book_id = t2.id AND narasarang_id = #{narasarangId};")
+    Book getBook(@Param("narasarangId") String narasarangId, @Param("bookId") int bookId);
 
     @Select("SELECT t1.* " +
             "FROM milibrary.books AS t1 " +

@@ -2,6 +2,7 @@ package kr.milibrary.controller;
 
 import io.swagger.annotations.*;
 import kr.milibrary.annotation.Auth;
+import kr.milibrary.annotation.JwtSession;
 import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Book;
 import kr.milibrary.domain.BookList;
@@ -29,8 +30,8 @@ public class BookController {
             @ApiResponse(code = 404, message = "해당 책이 존재하지 않을 때")
     })
     @GetMapping("/book/{bookId}")
-    public ResponseEntity<BaseResponse> getBook(@PathVariable int bookId) {
-        BaseResponse response = bookService.getBook(bookId);
+    public ResponseEntity<BaseResponse> getBook(@JwtSession @ApiParam(hidden = true) String narasarangId, @PathVariable int bookId) {
+        BaseResponse response = bookService.getBook(narasarangId, bookId);
         return new ResponseEntity<>(response, response.getResponseStatus());
     }
 
