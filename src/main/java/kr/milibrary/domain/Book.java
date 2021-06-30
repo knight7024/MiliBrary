@@ -238,7 +238,7 @@ public class Book extends BaseDomain {
         this.averageScore = averageScore;
     }
 
-    public boolean isBookmarked() {
+    public Boolean isBookmarked() {
         return isBookmarked;
     }
 }
