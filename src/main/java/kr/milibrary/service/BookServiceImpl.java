@@ -24,13 +24,13 @@ public class BookServiceImpl implements BookService {
         this.reviewMapper = reviewMapper;
     }
 
-    private Book getBookById(int bookId) throws NotFoundException {
-        return Optional.ofNullable(bookMapper.getBook(bookId)).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
+    private Book getBookById(String narasarangId, int bookId) throws NotFoundException {
+        return Optional.ofNullable(bookMapper.getBook(narasarangId, bookId)).orElseThrow(() -> new NotFoundException("해당 책이 존재하지 않습니다."));
     }
 
     @Override
-    public BaseResponse getBook(int bookId) {
-        Book dbBook = getBookById(bookId);
+    public BaseResponse getBook(String narasarangId, int bookId) {
+        Book dbBook = getBookById(narasarangId, bookId);
         dbBook.setAverageScore(reviewMapper.getAverageScore(bookId));
 
         return new BaseResponse(dbBook, HttpStatus.OK);

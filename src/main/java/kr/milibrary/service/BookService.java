@@ -4,7 +4,7 @@ import kr.milibrary.domain.BaseResponse;
 import kr.milibrary.domain.Book;
 
 public interface BookService {
-    BaseResponse getBook(int bookId);
+    BaseResponse getBook(String narasarangId, int bookId);
 
     BaseResponse getRandomBooks(Integer size);
 
