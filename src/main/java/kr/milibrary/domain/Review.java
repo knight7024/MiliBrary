@@ -18,7 +18,7 @@ public class Review extends BaseDomain {
     protected Integer bookId;
     @ApiModelProperty(value = "유저의 나라사랑 아이디", example = "'1994070246341'", readOnly = true)
     protected String narasarangId;
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "임의로 배정되는 유저의 닉네임", readOnly = true)
     protected String nickname;
     @ApiModelProperty(value = "유저가 매긴 평점(0부터 5까지 0.5 단위)", example = "2.5", required = true)
     @NotNull(message = "평점은 필수항목입니다.")
