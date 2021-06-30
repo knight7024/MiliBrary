@@ -18,7 +18,7 @@ public class User extends BaseDomain {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty(message = "비밀번호는 필수항목입니다")
     protected String password;
-    @ApiModelProperty(readOnly = true)
+    @ApiModelProperty(value = "임의로 배정되는 유저의 닉네임", readOnly = true)
     protected String nickname;
     protected Boolean isRegistered;
     @ApiModelProperty(readOnly = true)
